@@ -2,7 +2,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="GitFlowAVH.32e38d20-10d4-40fe-89bd-4970d0932f05" Version="1.0" Language="en-US" Publisher="QubicaAMF" />
-        <DisplayName>GitFlow  AVH</DisplayName>
+        <DisplayName>GitFlow AVH</DisplayName>
         <Description xml:space="preserve">Integrates GitFlow AVH in Visual Studio.</Description>
         <License>License.rtf</License>
         <Icon>icon.jpg</Icon>
