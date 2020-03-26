@@ -32,6 +32,11 @@ steps:
     OutputPatchFile: true
     FailIfNoPatchApplied: true
 
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 5.4.0'
+  inputs:
+    versionSpec: 5.4.0
+
 - task: NuGetCommand@2
   displayName: 'NuGet restore'
   inputs:
