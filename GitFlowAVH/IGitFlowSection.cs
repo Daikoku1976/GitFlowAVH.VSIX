@@ -1,0 +1,10 @@
+namespace GitFlowAVH
+{
+    public interface IGitFlowSection
+    {
+        void UpdateVisibleState();
+        void Refresh();
+        void ShowErrorNotification(string message);
+        void ShowInfoNotification(string message);
+    }
+}

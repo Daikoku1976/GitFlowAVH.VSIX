@@ -1,0 +1,56 @@
+﻿using GitFlowAVH.UI;
+using GitFlowAVH.ViewModels;
+using Microsoft.TeamFoundation.Controls;
+using GitFlowAVH.TeamExplorer;
+
+namespace GitFlowAVH
+{
+    [TeamExplorerSection(GuidList.GitFlowBugfixesSection, GuidList.GitFlowPage, 115)]
+    public class GitFlowBugfixesSection : TeamExplorerBaseSection, IGitFlowSection
+    {
+        private readonly BugfixesViewModel model;
+
+        public GitFlowBugfixesSection()
+        {
+            Title = "Current Bugfixes";
+            IsVisible = false;
+            model = new BugfixesViewModel(this);
+            UpdateVisibleState();
+        }
+
+        public override void Refresh()
+        {
+            var service = GetService<ITeamExplorerPage>();
+            service.Refresh();
+        }
+
+        public void UpdateVisibleState()
+        {
+            if (!GitFlowPage.GitFlowIsInstalled)
+            {
+                IsVisible = false;
+                return;
+            }
+
+            var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepo.RepositoryPath, GitFlowPage.OutputWindow);
+            if (gf.IsInitialized)
+            {
+                if (!IsVisible)
+                {
+                    SectionContent = new BugfixesUI(model);
+                    IsVisible = true;
+                }
+                model.Update();
+            }
+            else
+            {
+                IsVisible = false;
+            }
+        }
+
+        public void ShowErrorNotification(string message)
+        {
+            ShowNotification(message, NotificationType.Error);
+        }
+    }
+}
