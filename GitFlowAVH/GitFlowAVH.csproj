@@ -369,22 +369,6 @@
 		<None Include="Dependencies\gitflow\hooks\post-flow-bugfix-track" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="$(PkgLibGit2Sharp)\lib\net40\NativeBinaries\amd64\git2-91fa31f.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<IncludeInVSIX>true</IncludeInVSIX>
-		</Content>
-		<Content Include="$(PkgLibGit2Sharp)\lib\net40\NativeBinaries\amd64\git2-91fa31f.pdb">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<IncludeInVSIX>true</IncludeInVSIX>
-		</Content>
-		<Content Include="$(PkgLibGit2Sharp)\lib\net40\NativeBinaries\x86\git2-91fa31f.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<IncludeInVSIX>true</IncludeInVSIX>
-		</Content>
-		<Content Include="$(PkgLibGit2Sharp)\lib\net40\NativeBinaries\x86\git2-91fa31f.pdb">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<IncludeInVSIX>true</IncludeInVSIX>
-		</Content>
 		<Content Include="Resources\LinkIcon.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<IncludeInVSIX>true</IncludeInVSIX>
@@ -444,7 +428,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-	<!--<PropertyGroup>
+  <PropertyGroup>
     <NativeBinariesDirectory>$(PkgLibGit2Sharp)\lib\net40\NativeBinaries</NativeBinariesDirectory>
   </PropertyGroup>
   <ItemGroup>
@@ -453,5 +437,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>-->
+  </ItemGroup>
 </Project>
