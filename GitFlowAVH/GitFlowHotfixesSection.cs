@@ -26,7 +26,7 @@ namespace GitFlowAVH
 
         public void UpdateVisibleState()
         {
-            if (!GitFlowPage.GitFlowIsInstalled)
+            if (!GitFlowPage.GitFlowIsInstalled || GitFlowPage.ActiveRepo == null)
             {
                 IsVisible = false;
                 return;
