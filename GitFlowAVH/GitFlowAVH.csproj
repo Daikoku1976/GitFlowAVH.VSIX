@@ -432,7 +432,7 @@
     <NativeBinariesDirectory>$(PkgLibGit2Sharp)\lib\net40\NativeBinaries</NativeBinariesDirectory>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(NativeBinariesDirectory)\**\*.*">
+    <Content Include="$(NativeBinariesDirectory)\**\*.dll">
       <Link>NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
