@@ -384,10 +384,10 @@ namespace GitFlowAVH
 
         private string TrimBranchName(string branchName)
         {
-            if( branchName.LastIndexOf('/') >= 0)
-            {
-                branchName = branchName.Substring(branchName.LastIndexOf('/')+1);
-            }
+            //if( branchName.LastIndexOf('/') >= 0)
+            //{
+            //    branchName = branchName.Substring(branchName.LastIndexOf('/')+1);
+            //}
             return branchName.Trim().Replace(" ", "-");
         }
 
