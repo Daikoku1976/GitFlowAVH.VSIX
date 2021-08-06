@@ -1,7 +1,7 @@
 variables:
-  MajorVersion: 0
-  MinorVersion: 2
-  PatchVersion: 1
+  MajorVersion: 1
+  MinorVersion: 0
+  PatchVersion: 0
 
   BuildPlatform: 'Any CPU'
   BuildConfiguration: 'Release'
