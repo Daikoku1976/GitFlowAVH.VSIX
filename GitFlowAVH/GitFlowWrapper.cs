@@ -668,7 +668,11 @@ namespace GitFlowAVH
             if (noFastForward)
                 gitArguments += " --no-ff";
 
-            return RunGitFlow(gitArguments);
+            var result = RunGitFlow(gitArguments);
+
+            result.CommandOutput = addConfigOut + result.CommandOutput;
+
+            return result;
         }
 
         public GitFlowCommandResult StartRelease(string releaseName)
