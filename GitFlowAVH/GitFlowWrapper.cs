@@ -631,6 +631,31 @@ namespace GitFlowAVH
 
         public GitFlowCommandResult FinishBugfix(string bugfixName, bool rebaseOnDevelopment = false, bool deleteLocalBranch = true, bool deleteRemoteBranch = true, bool squash = false, bool noFastForward = false)
         {
+            var addConfigOut = "";
+            var s = bugfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            if (s.Length > 1)
+            {
+                var baseValue = GetBranchBaseValue($"bugfix/{bugfixName}");
+                if (!baseValue.EndsWith(s[0]))
+                {
+                    var resultConfig = RunGitConfig($"--add gitflow.branch.bugfix/{bugfixName}.base release/{s[0]}");
+                    if (!resultConfig.Success)
+                        return resultConfig;
+
+                    addConfigOut = resultConfig.CommandOutput + Environment.NewLine + Environment.NewLine;
+
+                    var adjustBaseValue = GetBranchBaseValue($"bugfix/{bugfixName}");
+                    if (!adjustBaseValue.EndsWith(s[0]))
+                    {
+                        var errorMessage = $"ERROR: Base value missing or mismatch {adjustBaseValue}";
+                        Debug.WriteLine(errorMessage);
+                        OnCommandErrorDataReceived(new CommandOutputEventArgs(errorMessage + Environment.NewLine));
+
+                        return new GitFlowCommandResult(false, errorMessage);
+                    }
+                }
+            }
+
             string gitArguments = "bugfix finish \"" + TrimBranchName(bugfixName) + "\"";
             if (rebaseOnDevelopment)
                 gitArguments += " -r";
