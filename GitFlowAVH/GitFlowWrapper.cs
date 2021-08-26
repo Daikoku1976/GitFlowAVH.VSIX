@@ -633,16 +633,18 @@ namespace GitFlowAVH
         {
             var addConfigOut = "";
             var s = bugfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var isReleaseBased = false;
             if (s.Length > 1)
             {
+                isReleaseBased = true;
                 var baseValue = GetBranchBaseValue($"bugfix/{bugfixName}");
                 if (!baseValue.EndsWith(s[0]))
                 {
-                    var resultConfig = RunGitConfig($"--add gitflow.branch.bugfix/{bugfixName}.base release/{s[0]}");
-                    if (!resultConfig.Success)
-                        return resultConfig;
+                    var resultConfigAdd = RunGitConfig($"--add gitflow.branch.bugfix/{bugfixName}.base release/{s[0]}");
+                    if (!resultConfigAdd.Success)
+                        return resultConfigAdd;
 
-                    addConfigOut = resultConfig.CommandOutput + Environment.NewLine + Environment.NewLine;
+                    addConfigOut = resultConfigAdd.CommandOutput + Environment.NewLine + Environment.NewLine;
 
                     var adjustBaseValue = GetBranchBaseValue($"bugfix/{bugfixName}");
                     if (!adjustBaseValue.EndsWith(s[0]))
@@ -659,9 +661,9 @@ namespace GitFlowAVH
             string gitArguments = "bugfix finish \"" + TrimBranchName(bugfixName) + "\"";
             if (rebaseOnDevelopment)
                 gitArguments += " -r";
-            if (!deleteLocalBranch)
+            if (!deleteLocalBranch || isReleaseBased)
                 gitArguments += " --keeplocal";
-            if (!deleteRemoteBranch)
+            if (!deleteRemoteBranch || isReleaseBased)
                 gitArguments += " --keepremote";
             if (squash)
                 gitArguments += " --squash";
@@ -672,7 +674,34 @@ namespace GitFlowAVH
 
             result.CommandOutput = addConfigOut + result.CommandOutput;
 
-            return result;
+            if (!result.Success)
+                return result;
+
+            if (!isReleaseBased)
+                return result;
+
+            var resultConfigUnset = RunGitConfig($"--unset gitflow.branch.bugfix/{bugfixName}.base");
+            resultConfigUnset.CommandOutput = result.CommandOutput + resultConfigUnset.CommandOutput + Environment.NewLine + Environment.NewLine;
+            if (!resultConfigUnset.Success)
+                return resultConfigUnset;
+
+            string gitDevArguments = "bugfix finish \"" + TrimBranchName(bugfixName) + "\"";
+            if (rebaseOnDevelopment)
+                gitDevArguments += " -r";
+            if (!deleteLocalBranch)
+                gitDevArguments += " --keeplocal";
+            if (!deleteRemoteBranch)
+                gitDevArguments += " --keepremote";
+            if (squash)
+                gitDevArguments += " --squash";
+            if (noFastForward)
+                gitDevArguments += " --no-ff";
+
+            var devResult = RunGitFlow(gitDevArguments);
+
+            devResult.CommandOutput = resultConfigUnset.CommandOutput + devResult.CommandOutput;
+
+            return devResult;
         }
 
         public GitFlowCommandResult StartRelease(string releaseName)
