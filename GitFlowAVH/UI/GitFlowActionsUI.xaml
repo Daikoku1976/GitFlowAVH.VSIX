@@ -239,7 +239,7 @@
                     IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
                     ItemsSource="{Binding Path=AllBugfixes, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Path=SelectedBugfix, Mode=TwoWay}"/>
-				<CheckBox Grid.Row="1" IsChecked="{Binding BugfixRebaseOnDevelopmentBranch}">Rebase on development branch</CheckBox>
+				<CheckBox Grid.Row="1" IsChecked="{Binding BugfixRebaseOnDevelopmentBranch}">Rebase on develop or release branch</CheckBox>
 				<CheckBox Grid.Row="2"  IsChecked="{Binding BugfixDeleteLocalBranch}">Delete local branch</CheckBox>
 				<CheckBox Grid.Row="3"  IsChecked="{Binding BugfixDeleteRemoteBranch}">Delete remote branch</CheckBox>
 				<CheckBox Grid.Row="4"  IsChecked="{Binding Squash}">Squash bugfix during merge</CheckBox>

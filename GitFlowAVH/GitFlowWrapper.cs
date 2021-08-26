@@ -615,7 +615,17 @@ namespace GitFlowAVH
 
         public GitFlowCommandResult StartBugfix(string bugfixName)
         {
-            string gitArguments = "bugfix start \"" + TrimBranchName(bugfixName) + "\"";
+            ValidateGitFlowActionName(bugfixName);
+            string bugfixBase = string.Empty;
+            string bugfixPrefix = string.Empty;
+            if (IsOnReleaseBranch)
+            {
+                var currentBranch = CurrentBranch;
+                bugfixPrefix = $"{currentBranch.Split('/')[1]}/";
+                bugfixBase = currentBranch;
+            }
+
+            string gitArguments = $"bugfix start \"{bugfixPrefix}{TrimBranchName(bugfixName)}\" {bugfixBase}";
             return RunGitFlow(gitArguments);
         }
 

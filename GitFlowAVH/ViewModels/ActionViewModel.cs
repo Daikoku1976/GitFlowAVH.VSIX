@@ -1357,7 +1357,11 @@ namespace GitFlowAVH.ViewModels
 
         public Visibility StartBugfixVisible
         {
-            get { return OnMainBranch(); }
+            get
+			{
+                var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
+                return gf.IsOnDevelopBranch || gf.IsOnMasterBranch || gf.IsOnReleaseBranch ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         public Visibility OtherStartBugfixVisible
@@ -1365,7 +1369,7 @@ namespace GitFlowAVH.ViewModels
             get
             {
                 var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
-                return gf.IsOnDevelopBranch || gf.IsOnMasterBranch ? Visibility.Collapsed : Visibility.Visible;
+                return gf.IsOnDevelopBranch || gf.IsOnMasterBranch || gf.IsOnReleaseBranch ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 
@@ -1419,12 +1423,6 @@ namespace GitFlowAVH.ViewModels
                 var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
                 return gf.IsOnDevelopBranch || gf.IsOnMasterBranch || gf.IsOnSupportBranch ? Visibility.Collapsed : Visibility.Visible;
             }
-        }
-
-        private static Visibility OnMainBranch()
-        {
-            var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
-            return gf.IsOnDevelopBranch || gf.IsOnMasterBranch ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public Visibility FinishHotfixVisible
@@ -1497,6 +1495,12 @@ namespace GitFlowAVH.ViewModels
                 var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
                 return gf.IsOnReleaseBranch ? Visibility.Collapsed : Visibility.Visible;
             }
+        }
+
+        private static Visibility OnMainBranch()
+        {
+            var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
+            return gf.IsOnDevelopBranch || gf.IsOnMasterBranch ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #endregion
