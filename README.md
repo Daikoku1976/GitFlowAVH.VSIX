@@ -49,3 +49,5 @@ The extension requires Visual Studio 2019. It will install GitFlow for you if it
 ### List of current GitFlow branches
 
 ![List features](Images/current_branches.png)
+
+
