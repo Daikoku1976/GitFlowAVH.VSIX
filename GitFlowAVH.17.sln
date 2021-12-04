@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFlowAVH", "GitFlowAVH\GitFlowAVH.csproj", "{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}"
 EndProject
@@ -15,18 +15,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|DevEnv17 = Debug|DevEnv17
+		Release|DevEnv17 = Release|DevEnv17
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Debug|DevEnv17.ActiveCfg = Debug|DevEnv17
+		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Debug|DevEnv17.Build.0 = Debug|DevEnv17
+		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Release|DevEnv17.ActiveCfg = Release|DevEnv17
+		{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}.Release|DevEnv17.Build.0 = Release|DevEnv17
+		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Debug|DevEnv17.ActiveCfg = Debug|DevEnv17
+		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Debug|DevEnv17.Build.0 = Debug|DevEnv17
+		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Release|DevEnv17.ActiveCfg = Release|DevEnv17
+		{1CEB4B19-0D92-4887-9234-CC89ACEE7D0D}.Release|DevEnv17.Build.0 = Release|DevEnv17
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
