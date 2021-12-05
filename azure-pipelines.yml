@@ -73,7 +73,7 @@ steps:
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: |
-     **\bin\$(BuildConfiguration)\*.vsix
+     **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.vsix
      README.md
      extension.manifest.json
     TargetFolder: '$(build.artifactstagingdirectory)'
