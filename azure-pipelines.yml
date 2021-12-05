@@ -3,7 +3,7 @@ variables:
   MinorVersion: 0
   PatchVersion: 0
 
-  BuildPlatform: 'Any CPU'
+  BuildPlatform: 'DevEnv16'
   BuildConfiguration: 'Release'
   DevEnvDir: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\'
 
