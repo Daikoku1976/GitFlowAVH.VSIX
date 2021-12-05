@@ -23,11 +23,12 @@ steps:
     FileNames: '**\AssemblyInfo.cs'
     VersionNumber: '$(build.buildnumber)'
     FileVersionNumber: '$(build.buildnumber)'
+
 - task: geeklearningio.gl-vsts-tasks-file-patch.xml-patch-task.XmlPatch@4
   displayName: 'Update VSIX version'
   inputs:
     XmlWorkingDir: GitFlowAVH
-    XmlTargetFilters: source.extension.vsixmanifest
+    XmlTargetFilters: '$(BuildPlatform)\source.extension.vsixmanifest'
     Namespaces: 'vsix => http://schemas.microsoft.com/developer/vsx-schema/2011'
     JsonPatchContent: '= /vsix:PackageManifest/vsix:Metadata/vsix:Identity/@Version=> "$(build.buildNumber)"'
     OutputPatchFile: true
