@@ -55,7 +55,7 @@ steps:
   displayName: 'type files.json'
   inputs:
     filename: type
-    arguments: GitFlowAVH\obj\$(BuildPlatform)\Release\files.json
+    arguments: GitFlowAVH\obj\Release\files.json
 
 - task: VSTest@2
   displayName: 'VsTest - testAssemblies'
