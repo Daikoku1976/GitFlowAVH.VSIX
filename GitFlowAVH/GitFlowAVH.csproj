@@ -205,11 +205,22 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
-	<ItemGroup>
-		<None Include="source.extension.vsixmanifest">
+  <Choose>
+    <When Condition=" '$(Platform)' == 'DevEnv16' ">
+	  <ItemGroup>
+		<None Include="DevEnv16\source.extension.vsixmanifest">
 			<SubType>Designer</SubType>
 		</None>
 	  </ItemGroup>
+	</When>
+    <When Condition=" '$(Platform)' == 'DevEnv17' ">
+	  <ItemGroup>
+		<None Include="DevEnv17\source.extension.vsixmanifest">
+			<SubType>Designer</SubType>
+		</None>
+	  </ItemGroup>
+    </When>
+  </Choose>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
