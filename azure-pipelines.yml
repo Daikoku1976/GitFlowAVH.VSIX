@@ -28,7 +28,7 @@ steps:
   displayName: 'Update VSIX version'
   inputs:
     XmlWorkingDir: GitFlowAVH
-    XmlTargetFilters: '$(BuildPlatform)\source.extension.vsixmanifest'
+    XmlTargetFilters: 'source.extension.vsixmanifest'
     Namespaces: 'vsix => http://schemas.microsoft.com/developer/vsx-schema/2011'
     JsonPatchContent: '= /vsix:PackageManifest/vsix:Metadata/vsix:Identity/@Version=> "$(build.buildNumber)"'
     OutputPatchFile: true
@@ -73,7 +73,7 @@ steps:
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)'
     Contents: |
-     **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.vsix
+     **\*.vsix
      README.md
      extension.manifest.json
     TargetFolder: '$(build.artifactstagingdirectory)'
