@@ -2,84 +2,97 @@ variables:
   MajorVersion: 2
   MinorVersion: 0
   PatchVersion: 0
-
-  BuildPlatform: 'DevEnv16'
+  
   BuildConfiguration: 'Release'
-  DevEnvDir: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\'
 
 name: $(MajorVersion).$(MinorVersion).$(PatchVersion)$(Rev:.r)
-
-pool:
-  vmImage: windows-2019
 
 trigger:
 - master
 
-steps:
+jobs:
+- job: Build
 
-- task: Assembly-Info-NetFramework@2
-  displayName: 'Set Assembly Manifest Data'
-  inputs:
-    FileNames: '**\AssemblyInfo.cs'
-    VersionNumber: '$(build.buildnumber)'
-    FileVersionNumber: '$(build.buildnumber)'
+  strategy:
+    matrix:
+      Python35:
+        Windows: '2019'
+        BuildPlatform: 'DevEnv16'
+        DevEnvDir: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\'
+      Python36:
+        Windows: '2022'
+        BuildPlatform: 'DevEnv17'
+        DevEnvDir: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\'
+    maxParallel: 2
 
-- task: geeklearningio.gl-vsts-tasks-file-patch.xml-patch-task.XmlPatch@4
-  displayName: 'Update VSIX version'
-  inputs:
-    XmlWorkingDir: GitFlowAVH
-    XmlTargetFilters: '$(BuildPlatform)\source.extension.vsixmanifest'
-    Namespaces: 'vsix => http://schemas.microsoft.com/developer/vsx-schema/2011'
-    JsonPatchContent: '= /vsix:PackageManifest/vsix:Metadata/vsix:Identity/@Version=> "$(build.buildNumber)"'
-    OutputPatchFile: true
-    FailIfNoPatchApplied: true
+  pool:
+    vmImage: windows-$(BuildPlatform)
 
-- task: VSBuild@1
-  displayName: 'Build solution GitFlowAVH.sln'
-  inputs:
-    solution: GitFlowAVH.$(BuildPlatform).sln
-    platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
-    msbuildArgs: '-restore'
-
-- task: CmdLine@1
-  displayName: 'type files.json'
-  inputs:
-    filename: type
-    arguments: GitFlowAVH\obj\$(BuildPlatform)\Release\files.json
-
-- task: VSTest@2
-  displayName: 'VsTest - testAssemblies'
-  inputs:
-    testAssemblyVer2: |
-     **\$(BuildConfiguration)\*test*.dll
-     !**\obj\**
-    platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
-    testFiltercriteria: FullyQualifiedName~GitFlowWrapperTests
-  enabled: false
-
-- task: CopyFiles@2
-  displayName: 'Copy marketplace files'
-  inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: |
-     **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.vsix
-     README.md
-     extension.manifest.json
-    TargetFolder: '$(build.artifactstagingdirectory)'
-    flattenFolders: true
-
-- task: CopyFiles@2
-  displayName: 'Copy images'
-  inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: |
-     Images\*.*
-    TargetFolder: '$(build.artifactstagingdirectory)'
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: GitFlowAVH.VSIX.$(BuildPlatform)
+  steps:
+  
+  - task: Assembly-Info-NetFramework@2
+    displayName: 'Set Assembly Manifest Data'
+    inputs:
+      FileNames: '**\AssemblyInfo.cs'
+      VersionNumber: '$(build.buildnumber)'
+      FileVersionNumber: '$(build.buildnumber)'
+  
+  - task: geeklearningio.gl-vsts-tasks-file-patch.xml-patch-task.XmlPatch@4
+    displayName: 'Update VSIX version'
+    inputs:
+      XmlWorkingDir: GitFlowAVH
+      XmlTargetFilters: '$(BuildPlatform)\source.extension.vsixmanifest'
+      Namespaces: 'vsix => http://schemas.microsoft.com/developer/vsx-schema/2011'
+      JsonPatchContent: '= /vsix:PackageManifest/vsix:Metadata/vsix:Identity/@Version=> "$(build.buildNumber)"'
+      OutputPatchFile: true
+      FailIfNoPatchApplied: true
+  
+  - task: VSBuild@1
+    displayName: 'Build solution GitFlowAVH.sln'
+    inputs:
+      solution: GitFlowAVH.$(BuildPlatform).sln
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
+      msbuildArgs: '-restore'
+  
+  - task: CmdLine@1
+    displayName: 'type files.json'
+    inputs:
+      filename: type
+      arguments: GitFlowAVH\obj\$(BuildPlatform)\Release\files.json
+  
+  - task: VSTest@2
+    displayName: 'VsTest - testAssemblies'
+    inputs:
+      testAssemblyVer2: |
+       **\$(BuildConfiguration)\*test*.dll
+       !**\obj\**
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
+      testFiltercriteria: FullyQualifiedName~GitFlowWrapperTests
+    enabled: false
+  
+  - task: CopyFiles@2
+    displayName: 'Copy marketplace files'
+    inputs:
+      SourceFolder: '$(system.defaultworkingdirectory)'
+      Contents: |
+       **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.vsix
+       README.md
+       extension.manifest.json
+      TargetFolder: '$(build.artifactstagingdirectory)'
+      flattenFolders: true
+  
+  - task: CopyFiles@2
+    displayName: 'Copy images'
+    inputs:
+      SourceFolder: '$(system.defaultworkingdirectory)'
+      Contents: |
+       Images\*.*
+      TargetFolder: '$(build.artifactstagingdirectory)'
+  
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+      ArtifactName: GitFlowAVH.VSIX.$(BuildPlatform)
