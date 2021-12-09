@@ -7,7 +7,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">DevEnv17</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">2022</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{9C9782B4-AE32-4DF7-81FF-AEFB73DF6CD7}</ProjectGuid>
@@ -27,36 +27,36 @@
     <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|DevEnv16' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|2019' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\DevEnv16\Debug\</OutputPath>
+    <OutputPath>bin\2019\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|DevEnv16' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|2019' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\DevEnv16\Release\</OutputPath>
+    <OutputPath>bin\2019\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|DevEnv17' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|2022' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\DevEnv17\Debug\</OutputPath>
+    <OutputPath>bin\2022\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|DevEnv17' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|2022' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\DevEnv17\Release\</OutputPath>
+    <OutputPath>bin\2022\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -93,7 +93,7 @@
     </PackageReference>
   </ItemGroup>
   <Choose>
-    <When Condition=" '$(Platform)' == 'DevEnv16' ">
+    <When Condition=" '$(Platform)' == '2019' ">
 	  <ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.204" ExcludeAssets="runtime">
 		  <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -104,7 +104,7 @@
 		</PackageReference>
 	  </ItemGroup>
 	</When>
-    <When Condition=" '$(Platform)' == 'DevEnv17' ">
+    <When Condition=" '$(Platform)' == '2022' ">
 	  <ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.31902.203" ExcludeAssets="runtime">
 		  <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -206,16 +206,16 @@
     </Content>
   </ItemGroup>
   <Choose>
-    <When Condition=" '$(Platform)' == 'DevEnv16' ">
+    <When Condition=" '$(Platform)' == '2019' ">
 	  <ItemGroup>
-		<None Include="DevEnv16\source.extension.vsixmanifest">
+		<None Include="2019\source.extension.vsixmanifest">
 			<SubType>Designer</SubType>
 		</None>
 	  </ItemGroup>
 	</When>
-    <When Condition=" '$(Platform)' == 'DevEnv17' ">
+    <When Condition=" '$(Platform)' == '2022' ">
 	  <ItemGroup>
-		<None Include="DevEnv17\source.extension.vsixmanifest">
+		<None Include="2022\source.extension.vsixmanifest">
 			<SubType>Designer</SubType>
 		</None>
 	  </ItemGroup>
