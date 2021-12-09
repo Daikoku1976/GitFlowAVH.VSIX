@@ -15,18 +15,18 @@ jobs:
 
   strategy:
     matrix:
-      Python35:
+      2019:
         Windows: '2019'
         BuildPlatform: 'DevEnv16'
         DevEnvDir: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\'
-      Python36:
+      2022:
         Windows: '2022'
         BuildPlatform: 'DevEnv17'
         DevEnvDir: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\'
     maxParallel: 2
 
   pool:
-    vmImage: windows-$(BuildPlatform)
+    vmImage: windows-$(Windows)
 
   steps:
   
