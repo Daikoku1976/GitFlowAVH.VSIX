@@ -168,22 +168,22 @@ namespace GitFlowAVH
                                 Message = c.Tip.MessageShort
                             }).ToList();
 
-                    var remoteFeatureBranches =
-                        repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
-                        && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName== b.CanonicalName))
-                            .Select(c => new BranchItem
-                            {
-                                Author = c.Tip.Author.Name,
-                                Name = c.Name,
-                                LastCommit = c.Tip.Author.When,
-                                IsTracking = c.IsTracking,
-                                IsCurrentBranch = c.IsCurrentRepositoryHead,
-                                IsRemote = c.IsRemote,
-                                CommitId = c.Tip.Id.ToString(),
-                                Message = c.Tip.MessageShort
-                            }).ToList();
+                    //var remoteFeatureBranches =
+                    //    repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
+                    //    && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName== b.CanonicalName))
+                    //        .Select(c => new BranchItem
+                    //        {
+                    //            Author = c.Tip.Author.Name,
+                    //            Name = c.Name,
+                    //            LastCommit = c.Tip.Author.When,
+                    //            IsTracking = c.IsTracking,
+                    //            IsCurrentBranch = c.IsCurrentRepositoryHead,
+                    //            IsRemote = c.IsRemote,
+                    //            CommitId = c.Tip.Id.ToString(),
+                    //            Message = c.Tip.MessageShort
+                    //        }).ToList();
 
-                    featureBranches.AddRange(remoteFeatureBranches);
+                    //featureBranches.AddRange(remoteFeatureBranches);
                     return featureBranches;
                 }   
 
@@ -214,22 +214,22 @@ namespace GitFlowAVH
                                 Message = c.Tip.MessageShort
                             }).ToList();
 
-                    var remoteBugfixBranches =
-                        repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
-                        && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName == b.CanonicalName))
-                            .Select(c => new BranchItem
-                            {
-                                Author = c.Tip.Author.Name,
-                                Name = c.Name,
-                                LastCommit = c.Tip.Author.When,
-                                IsTracking = c.IsTracking,
-                                IsCurrentBranch = c.IsCurrentRepositoryHead,
-                                IsRemote = c.IsRemote,
-                                CommitId = c.Tip.Id.ToString(),
-                                Message = c.Tip.MessageShort
-                            }).ToList();
+                    //var remoteBugfixBranches =
+                    //    repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
+                    //    && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName == b.CanonicalName))
+                    //        .Select(c => new BranchItem
+                    //        {
+                    //            Author = c.Tip.Author.Name,
+                    //            Name = c.Name,
+                    //            LastCommit = c.Tip.Author.When,
+                    //            IsTracking = c.IsTracking,
+                    //            IsCurrentBranch = c.IsCurrentRepositoryHead,
+                    //            IsRemote = c.IsRemote,
+                    //            CommitId = c.Tip.Id.ToString(),
+                    //            Message = c.Tip.MessageShort
+                    //        }).ToList();
 
-                    bugfixBranches.AddRange(remoteBugfixBranches);
+                    //bugfixBranches.AddRange(remoteBugfixBranches);
                     return bugfixBranches;
                 }
             }
@@ -290,22 +290,22 @@ namespace GitFlowAVH
                                 Message = c.Tip.MessageShort
                             }).ToList();
 
-                    var remoteHotfixBranches =
-                        repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
-                        && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName == b.CanonicalName))
-                            .Select(c => new BranchItem
-                            {
-                                Author = c.Tip.Author.Name,
-                                Name = c.Name,
-                                LastCommit = c.Tip.Author.When,
-                                IsTracking = c.IsTracking,
-                                IsCurrentBranch = c.IsCurrentRepositoryHead,
-                                IsRemote = c.IsRemote,
-                                CommitId = c.Tip.Id.ToString(),
-                                Message = c.Tip.MessageShort
-                            }).ToList();
+                    //var remoteHotfixBranches =
+                    //    repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
+                    //    && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName == b.CanonicalName))
+                    //        .Select(c => new BranchItem
+                    //        {
+                    //            Author = c.Tip.Author.Name,
+                    //            Name = c.Name,
+                    //            LastCommit = c.Tip.Author.When,
+                    //            IsTracking = c.IsTracking,
+                    //            IsCurrentBranch = c.IsCurrentRepositoryHead,
+                    //            IsRemote = c.IsRemote,
+                    //            CommitId = c.Tip.Id.ToString(),
+                    //            Message = c.Tip.MessageShort
+                    //        }).ToList();
 
-                    hotfixBranches.AddRange(remoteHotfixBranches);
+                    //hotfixBranches.AddRange(remoteHotfixBranches);
                     return hotfixBranches;
                 }
             }
@@ -335,22 +335,22 @@ namespace GitFlowAVH
                                 Message = c.Tip.MessageShort
                             }).ToList();
 
-                    var remoteSupportBranches =
-                        repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
-                        && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName == b.CanonicalName))
-                            .Select(c => new BranchItem
-                            {
-                                Author = c.Tip.Author.Name,
-                                Name = c.Name,
-                                LastCommit = c.Tip.Author.When,
-                                IsTracking = c.IsTracking,
-                                IsCurrentBranch = c.IsCurrentRepositoryHead,
-                                IsRemote = c.IsRemote,
-                                CommitId = c.Tip.Id.ToString(),
-                                Message = c.Tip.MessageShort
-                            }).ToList();
+                    //var remoteSupportBranches =
+                    //    repo.Branches.Where(b => b.IsRemote && b.Name.Contains(prefix)
+                    //    && !repo.Branches.Any(br => !br.IsRemote && br.IsTracking && br.TrackedBranch.CanonicalName == b.CanonicalName))
+                    //        .Select(c => new BranchItem
+                    //        {
+                    //            Author = c.Tip.Author.Name,
+                    //            Name = c.Name,
+                    //            LastCommit = c.Tip.Author.When,
+                    //            IsTracking = c.IsTracking,
+                    //            IsCurrentBranch = c.IsCurrentRepositoryHead,
+                    //            IsRemote = c.IsRemote,
+                    //            CommitId = c.Tip.Id.ToString(),
+                    //            Message = c.Tip.MessageShort
+                    //        }).ToList();
 
-                    supportBranches.AddRange(remoteSupportBranches);
+                    //supportBranches.AddRange(remoteSupportBranches);
 
                     return supportBranches;
                 }
