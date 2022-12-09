@@ -38,21 +38,29 @@
             <Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=StartHotfixVisible}" Margin="4,0,-1,0"/>
             <teamExplorer:DropDownLink Text="Finish Feature" DropDownMenuCommand="{Binding Path=FinishFeatureDropDownCommand}"  Visibility="{Binding Path=FinishFeatureVisible}" />
             <Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=FinishFeatureVisible}" Margin="4,0,-1,0"/>
+            <teamExplorer:DropDownLink Text="Pull Request Feature" DropDownMenuCommand="{Binding Path=PullRequestFeatureDropDownCommand}"  Visibility="{Binding Path=PullRequestFeatureVisible}" />
+            <Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=PullRequestFeatureVisible}" Margin="4,0,-1,0"/>
 			<teamExplorer:DropDownLink Text="Finish Bugfix" DropDownMenuCommand="{Binding Path=FinishBugfixDropDownCommand}"  Visibility="{Binding Path=FinishBugfixVisible}" />
 			<Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=FinishBugfixVisible}" Margin="4,0,-1,0"/>
-			<teamExplorer:DropDownLink Text="Finish Release" DropDownMenuCommand="{Binding Path=FinishReleaseDropDownCommand}"  Visibility="{Binding Path=FinishReleaseVisible}" />
+            <teamExplorer:DropDownLink Text="Pull Request Bugfix" DropDownMenuCommand="{Binding Path=PullRequestBugfixDropDownCommand}"  Visibility="{Binding Path=PullRequestBugfixVisible}" />
+            <Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=PullRequestBugfixVisible}" Margin="4,0,-1,0"/>
+            <teamExplorer:DropDownLink Text="Finish Release" DropDownMenuCommand="{Binding Path=FinishReleaseDropDownCommand}"  Visibility="{Binding Path=FinishReleaseVisible}" />
             <Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=FinishReleaseVisible}" Margin="4,0,-1,0"/>
             <teamExplorer:DropDownLink Text="Finish Hotfix" DropDownMenuCommand="{Binding Path=FinishHotfixDropDownCommand}"  Visibility="{Binding Path=FinishHotfixVisible}" />
             <Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=FinishHotfixVisible}" Margin="4,0,-1,0"/>
+            <teamExplorer:DropDownLink Text="Pull Request Hotfix" DropDownMenuCommand="{Binding Path=PullRequestHotfixDropDownCommand}"  Visibility="{Binding Path=PullRequestHotfixVisible}" />
+            <Separator Style="{StaticResource VerticalSeparator}" Visibility="{Binding Path=PullRequestHotfixVisible}" Margin="4,0,-1,0"/>
             <teamExplorer:DropDownLink Name="OtherActions" Text="Other" >
                 <teamExplorer:DropDownLink.DropDownMenu>
                     <ContextMenu>
                         <MenuItem Header="Start Feature" Command="{Binding Path=StartFeatureDropDownCommand}" Visibility="{Binding Path=OtherStartFeatureVisible}"></MenuItem>
                         <MenuItem Header="Finish Feature" Command="{Binding Path=FinishFeatureDropDownCommand}" Visibility="{Binding Path=OtherFinishFeatureVisible}"></MenuItem>
+                        <MenuItem Header="Pull Request Feature" Command="{Binding Path=PullRequestFeatureDropDownCommand}" Visibility="{Binding Path=OtherPullRequestFeatureVisible}"></MenuItem>
 						<Separator/>
 						<MenuItem Header="Start Bugfix" Command="{Binding Path=StartBugfixDropDownCommand}" Visibility="{Binding Path=OtherStartBugfixVisible}"></MenuItem>
 						<MenuItem Header="Finish Bugfix" Command="{Binding Path=FinishBugfixDropDownCommand}" Visibility="{Binding Path=OtherFinishBugfixVisible}"></MenuItem>
-						<Separator/>
+                        <MenuItem Header="Pull Request Bugfix" Command="{Binding Path=PullRequestBugfixDropDownCommand}" Visibility="{Binding Path=OtherPullRequestBugfixVisible}"></MenuItem>
+                        <Separator/>
                         <MenuItem Header="Start Release" Command="{Binding Path=StartReleaseDropDownCommand}" Visibility="{Binding Path=OtherStartReleaseVisible}"></MenuItem>
                         <MenuItem Header="Finish Release" Command="{Binding Path=FinishReleaseDropDownCommand}" Visibility="{Binding Path=OtherFinishReleaseVisible}"></MenuItem>
 						<Separator/>
@@ -60,6 +68,7 @@
 						<Separator/>
                         <MenuItem Header="Start Hotfix" Command="{Binding Path=StartHotfixDropDownCommand}" Visibility="{Binding Path=OtherStartHotfixVisible}"></MenuItem>
                         <MenuItem Header="Finish Hotfix" Command="{Binding Path=FinishHotfixDropDownCommand}" Visibility="{Binding Path=OtherFinishHotfixVisible}"></MenuItem>
+                        <MenuItem Header="Pull Request Hotfix" Command="{Binding Path=PullRequestHotfixDropDownCommand}" Visibility="{Binding Path=OtherPullRequestHotfixVisible}"></MenuItem>
                     </ContextMenu>
                 </teamExplorer:DropDownLink.DropDownMenu>
             </teamExplorer:DropDownLink>
@@ -223,7 +232,32 @@
             </StackPanel>
         </Grid>
         </Border>
-		<Border Grid.Row="7" Visibility="{Binding ShowFinishBugfix}" Style="{StaticResource EmbeddedDialog}">
+        <Border Grid.Row="7" Visibility="{Binding ShowPullRequestFeature}" Style="{StaticResource EmbeddedDialog}">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
+                    IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
+                    ItemsSource="{Binding Path=AllFeatures, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Path=SelectedFeature, Mode=TwoWay}"/>
+                <CheckBox Grid.Row="1"  IsChecked="{Binding FeatureDeleteLocalBranch}">Delete local branch</CheckBox>
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
+                    <Button Command="{Binding PullRequestFeatureCommand}">OK</Button>
+                    <teamExplorer:TextLink x:Uid="cancelPullRequestFeature" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
+                          Localization.Attributes="Text (Modifiable Readable Text)"
+                          Command="{Binding Path=CancelPullRequestFeatureCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Grid.Row="8" Visibility="{Binding ShowFinishBugfix}" Style="{StaticResource EmbeddedDialog}">
 			<Grid >
 				<Grid.RowDefinitions>
 					<RowDefinition></RowDefinition>
@@ -246,13 +280,38 @@
 				<CheckBox Grid.Row="5"  IsChecked="{Binding NoFastForward}">Never fast-forward during the merge</CheckBox>
 				<StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
 					<Button Command="{Binding FinishBugfixCommand}">OK</Button>
-					<teamExplorer:TextLink x:Uid="cancelBugfixFeature" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
+                    <teamExplorer:TextLink x:Uid="cancelFinishBugfix" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
                           Localization.Attributes="Text (Modifiable Readable Text)"
                           Command="{Binding Path=CancelFinishBugfixCommand}"/>
 				</StackPanel>
 			</Grid>
 		</Border>
-		<Border Grid.Row="8" Visibility="{Binding ShowFinishRelease}" Style="{StaticResource EmbeddedDialog}">
+        <Border Grid.Row="9" Visibility="{Binding ShowPullRequestBugfix}" Style="{StaticResource EmbeddedDialog}">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
+                    IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
+                    ItemsSource="{Binding Path=AllBugfixes, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Path=SelectedBugfix, Mode=TwoWay}"/>
+                <CheckBox Grid.Row="1"  IsChecked="{Binding BugfixDeleteLocalBranch}">Delete local branch</CheckBox>
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
+                    <Button Command="{Binding PullRequestBugfixCommand}">OK</Button>
+                    <teamExplorer:TextLink x:Uid="cancelPullRequestBugfix" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
+                          Localization.Attributes="Text (Modifiable Readable Text)"
+                          Command="{Binding Path=CancelPullRequestBugfixCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Grid.Row="10" Visibility="{Binding ShowFinishRelease}" Style="{StaticResource EmbeddedDialog}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
@@ -285,7 +344,7 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <Border Grid.Row="9" Visibility="{Binding ShowFinishHotfix}" Style="{StaticResource EmbeddedDialog}">
+        <Border Grid.Row="11" Visibility="{Binding ShowFinishHotfix}" Style="{StaticResource EmbeddedDialog}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
@@ -310,9 +369,34 @@
                 <CheckBox Grid.Row="5" IsChecked="{Binding HotfixPushChanges}">Push changes to remote</CheckBox>
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
                     <Button Command="{Binding FinishHotfixCommand}">OK</Button>
-                    <teamExplorer:TextLink x:Uid="cancelFinishFeature" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
+                    <teamExplorer:TextLink x:Uid="cancelFinishHotfix" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
                           Localization.Attributes="Text (Modifiable Readable Text)"
                           Command="{Binding Path=CancelFinishHotfixCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Grid.Row="9" Visibility="{Binding ShowPullRequestHotfix}" Style="{StaticResource EmbeddedDialog}">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
+                    IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
+                    ItemsSource="{Binding Path=AllHotfixes, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding Path=SelectedHotfix, Mode=TwoWay}"/>
+                <CheckBox Grid.Row="1"  IsChecked="{Binding HotfixDeleteBranch}">Delete local branch</CheckBox>
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
+                    <Button Command="{Binding PullRequestHotfixCommand}">OK</Button>
+                    <teamExplorer:TextLink x:Uid="cancelPullRequestHotfix" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
+                          Localization.Attributes="Text (Modifiable Readable Text)"
+                          Command="{Binding Path=CancelPullRequestHotfixCommand}"/>
                 </StackPanel>
             </Grid>
         </Border>

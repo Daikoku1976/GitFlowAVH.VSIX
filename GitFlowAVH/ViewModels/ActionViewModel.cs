@@ -21,6 +21,10 @@ namespace GitFlowAVH.ViewModels
         private Visibility showFinishRelease;
         private Visibility showFinishHotfix;
 
+        private Visibility showPullRequestFeature;
+        private Visibility showPullRequestBugfix;
+        private Visibility showPullRequestHotfix;
+
         private string featureName;
         private string bugfixName;
         private string releaseName;
@@ -79,10 +83,18 @@ namespace GitFlowAVH.ViewModels
         public ICommand FinishFeatureCommand { get; private set; }
         public ICommand CancelFinishFeatureCommand { get; private set; }
 
+        public ICommand PullRequestFeatureDropDownCommand { get; private set; }
+        public ICommand PullRequestFeatureCommand { get; private set; }
+        public ICommand CancelPullRequestFeatureCommand { get; private set; }
+
         public ICommand FinishBugfixDropDownCommand { get; private set; }
         public ICommand FinishBugfixCommand { get; private set; }
         public ICommand CancelFinishBugfixCommand { get; private set; }
-        
+
+        public ICommand PullRequestBugfixDropDownCommand { get; private set; }
+        public ICommand PullRequestBugfixCommand { get; private set; }
+        public ICommand CancelPullRequestBugfixCommand { get; private set; }
+
         public ICommand FinishReleaseDropDownCommand { get; private set; }
         public ICommand FinishReleaseCommand { get; private set; }
         public ICommand CancelFinishReleaseCommand { get; private set; }
@@ -90,6 +102,10 @@ namespace GitFlowAVH.ViewModels
         public ICommand FinishHotfixDropDownCommand { get; private set; }
         public ICommand FinishHotfixCommand { get; private set; }
         public ICommand CancelFinishHotfixCommand { get; private set; }
+
+        public ICommand PullRequestHotfixDropDownCommand { get; private set; }
+        public ICommand PullRequestHotfixCommand { get; private set; }
+        public ICommand CancelPullRequestHotfixCommand { get; private set; }
 
 
         public ActionViewModel(GitFlowActionSection te)
@@ -120,6 +136,10 @@ namespace GitFlowAVH.ViewModels
             ShowFinishRelease = Visibility.Collapsed;
             ShowFinishHotfix = Visibility.Collapsed;
 
+            ShowPullRequestFeature = Visibility.Collapsed;
+            ShowPullRequestBugfix = Visibility.Collapsed;
+            ShowPullRequestHotfix = Visibility.Collapsed;
+
             HideProgressBar();
 
             StartFeatureDropDownCommand = new DropDownLinkCommand(p => StartFeatureDropDown(), p => CanShowStartFeatureDropDown());
@@ -146,9 +166,17 @@ namespace GitFlowAVH.ViewModels
             FinishFeatureCommand = new RelayCommand(p => FinishFeature(), p => CanFinishFeature);
             CancelFinishFeatureCommand = new RelayCommand(p => CancelFinishFeature(), p => CanCancelFinishCommand());
 
+            PullRequestFeatureDropDownCommand = new DropDownLinkCommand(p => PullRequestFeatureDropDown(), p => CanShowPullRequestFeatureDropDown());
+            PullRequestFeatureCommand = new RelayCommand(p => PullRequestFeature(), p => CanFinishFeature);
+            CancelPullRequestFeatureCommand = new RelayCommand(p => CancelPullRequestFeature(), p => CanCancelFinishCommand());
+
             FinishBugfixDropDownCommand = new DropDownLinkCommand(p => FinishBugfixDropDown(), p => CanShowFinishBugfixDropDown());
             FinishBugfixCommand = new RelayCommand(p => FinishBugfix(), p => CanFinishBugfix);
             CancelFinishBugfixCommand = new RelayCommand(p => CancelFinishBugfix(), p => CanCancelFinishCommand());
+
+            PullRequestBugfixDropDownCommand = new DropDownLinkCommand(p => PullRequestBugfixDropDown(), p => CanShowPullRequestBugfixDropDown());
+            PullRequestBugfixCommand = new RelayCommand(p => PullRequestBugfix(), p => CanFinishBugfix);
+            CancelPullRequestBugfixCommand = new RelayCommand(p => CancelPullRequestBugfix(), p => CanCancelFinishCommand());
 
             FinishReleaseDropDownCommand = new DropDownLinkCommand(p => FinishReleaseDropDown(), p => CanShowFinishReleaseDropDown());
             FinishReleaseCommand = new RelayCommand(p => FinishRelease(), p => CanFinishRelease);
@@ -157,6 +185,10 @@ namespace GitFlowAVH.ViewModels
             FinishHotfixDropDownCommand = new DropDownLinkCommand(p => FinishHotfixDropDown(), p => CanShowFinishHotfixDropDown());
             FinishHotfixCommand = new RelayCommand(p => FinishHotfix(), p => CanFinishHotfix);
             CancelFinishHotfixCommand = new RelayCommand(p => CancelFinishHotfix(), p => CanCancelFinishCommand());
+
+            PullRequestHotfixDropDownCommand = new DropDownLinkCommand(p => PullRequestHotfixDropDown(), p => CanShowPullRequestHotfixDropDown());
+            PullRequestHotfixCommand = new RelayCommand(p => PullRequesthHotfix(), p => CanFinishHotfix);
+            CancelPullRequestHotfixCommand = new RelayCommand(p => CancelPullRequestHotfix(), p => CanCancelFinishCommand());
         }
 
         public bool CanFinishRelease
@@ -209,14 +241,29 @@ namespace GitFlowAVH.ViewModels
             ShowFinishFeature = Visibility.Collapsed;
         }
 
+        private void CancelPullRequestFeature()
+        {
+            ShowPullRequestFeature = Visibility.Collapsed;
+        }
+
         private void CancelFinishBugfix()
         {
             ShowFinishBugfix = Visibility.Collapsed;
         }
 
+        private void CancelPullRequestBugfix()
+        {
+            ShowPullRequestBugfix = Visibility.Collapsed;
+        }
+
         private void CancelFinishHotfix()
         {
             ShowFinishHotfix = Visibility.Collapsed;
+        }
+
+        private void CancelPullRequestHotfix()
+        {
+            ShowPullRequestHotfix = Visibility.Collapsed;
         }
 
         private void CancelFinishRelease()
@@ -258,7 +305,17 @@ namespace GitFlowAVH.ViewModels
             return true;
         }
 
+        private bool CanShowPullRequestFeatureDropDown()
+        {
+            return true;
+        }
+
         private bool CanShowFinishBugfixDropDown()
+        {
+            return true;
+        }
+
+        private bool CanShowPullRequestBugfixDropDown()
         {
             return true;
         }
@@ -267,6 +324,12 @@ namespace GitFlowAVH.ViewModels
         {
             return true;
         }
+
+        private bool CanShowPullRequestHotfixDropDown()
+        {
+            return true;
+        }
+
         private bool CanShowFinishReleaseDropDown()
         {
             return true;
@@ -292,9 +355,12 @@ namespace GitFlowAVH.ViewModels
             ShowStartSupport = Visibility.Collapsed;
             ShowStartHotfix = Visibility.Collapsed;
             ShowFinishFeature = Visibility.Collapsed;
+            ShowPullRequestFeature = Visibility.Collapsed;
             ShowFinishBugfix = Visibility.Collapsed;
+            ShowPullRequestBugfix = Visibility.Collapsed;
             ShowFinishRelease = Visibility.Collapsed;
             ShowFinishHotfix = Visibility.Collapsed;
+            ShowPullRequestHotfix = Visibility.Collapsed;
         }
 
         private void UpdateMenus()
@@ -305,9 +371,12 @@ namespace GitFlowAVH.ViewModels
             OnPropertyChanged("StartSupportVisible");
             OnPropertyChanged("StartHotfixVisible");
             OnPropertyChanged("FinishFeatureVisible");
+            OnPropertyChanged("PullRequestFeatureVisible");
             OnPropertyChanged("FinishBugfixVisible");
+            OnPropertyChanged("PullRequestBugfixVisible");
             OnPropertyChanged("FinishReleaseVisible");
             OnPropertyChanged("FinishHotfixVisible");
+            OnPropertyChanged("PullRequestHotfixVisible");
 
             OnPropertyChanged("OtherStartFeatureVisible");
             OnPropertyChanged("OtherStartBugfixVisible");
@@ -315,9 +384,12 @@ namespace GitFlowAVH.ViewModels
             OnPropertyChanged("OtherStartSupportVisible");
             OnPropertyChanged("OtherStartHotfixVisible");
             OnPropertyChanged("OtherFinishFeatureVisible");
+            OnPropertyChanged("OtherPullRequestFeatureVisible");
             OnPropertyChanged("OtherFinishBugfixVisible");
+            OnPropertyChanged("OtherPullRequestBugfixVisible");
             OnPropertyChanged("OtherFinishReleaseVisible");
             OnPropertyChanged("OtherFinishHotfixVisible");
+            OnPropertyChanged("OtherPullRequestHotfixVisible");
         }
 
         private void StartHotfixDropDown()
@@ -344,10 +416,22 @@ namespace GitFlowAVH.ViewModels
             ShowFinishFeature = Visibility.Visible;
         }
 
+        private void PullRequestFeatureDropDown()
+        {
+            HideAll();
+            ShowPullRequestFeature = Visibility.Visible;
+        }
+
         private void FinishBugfixDropDown()
         {
             HideAll();
             ShowFinishBugfix = Visibility.Visible;
+        }
+
+        private void PullRequestBugfixDropDown()
+        {
+            HideAll();
+            ShowPullRequestBugfix = Visibility.Visible;
         }
 
         private void FinishHotfixDropDown()
@@ -355,6 +439,13 @@ namespace GitFlowAVH.ViewModels
             HideAll();
             ShowFinishHotfix = Visibility.Visible;
         }
+
+        private void PullRequestHotfixDropDown()
+        {
+            HideAll();
+            ShowPullRequestHotfix = Visibility.Visible;
+        }
+
         private void FinishReleaseDropDown()
         {
             HideAll();
@@ -766,6 +857,11 @@ namespace GitFlowAVH.ViewModels
             }
 		}
 
+        private void PullRequestFeature()
+        {
+            ShowInfoMessage("PullRequestFeature... TODO");
+        }
+
         private void FinishBugfix()
         {
             try
@@ -810,6 +906,11 @@ namespace GitFlowAVH.ViewModels
                 ShowErrorMessage(ex.ToString());
                 Logger.Exception(ex);
             }
+        }
+
+        private void PullRequestBugfix()
+        {
+            ShowInfoMessage("PullRequestBugfix... TODO");
         }
 
         private void FinishRelease()
@@ -896,6 +997,11 @@ namespace GitFlowAVH.ViewModels
                 Logger.Exception(ex);
             }
 
+        }
+
+        private void PullRequesthHotfix()
+        {
+            ShowInfoMessage("PullRequesthHotfix... TODO");
         }
 
         public string ReleaseName
@@ -1042,6 +1148,23 @@ namespace GitFlowAVH.ViewModels
             }
         }
 
+        public Visibility ShowPullRequestFeature
+        {
+            get { return showPullRequestFeature; }
+            set
+            {
+                if (value == showPullRequestFeature) return;
+                showPullRequestFeature = value;
+                var gf = new GitFlowWrapper(GitFlowPage.ActiveRepoPath);
+                if (gf.IsOnFeatureBranch)
+                {
+                    SelectedFeature = AllFeatures.First(f => f.Name == gf.CurrentBranchLeafName);
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
         public Visibility ShowFinishBugfix
         {
             get { return showFinishBugfix; }
@@ -1059,6 +1182,23 @@ namespace GitFlowAVH.ViewModels
             }
         }
 
+        public Visibility ShowPullRequestBugfix
+        {
+            get { return showPullRequestBugfix; }
+            set
+            {
+                if (value == showPullRequestBugfix) return;
+                showPullRequestBugfix = value;
+                var gf = new GitFlowWrapper(GitFlowPage.ActiveRepoPath);
+                if (gf.IsOnBugfixBranch)
+                {
+                    SelectedBugfix = AllBugfixes.First(f => f.Name == gf.CurrentBranchLeafName);
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
         public Visibility ShowFinishHotfix
         {
             get { return showFinishHotfix; }
@@ -1066,6 +1206,22 @@ namespace GitFlowAVH.ViewModels
             {
                 if (value == showFinishHotfix) return;
                 showFinishHotfix = value;
+                var gf = new GitFlowWrapper(GitFlowPage.ActiveRepoPath);
+                if (gf.IsOnHotfixBranch)
+                {
+                    SelectedHotfix = AllHotfixes.First(f => f.Name == gf.CurrentBranchLeafName);
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public Visibility ShowPullRequestHotfix
+        {
+            get { return showPullRequestHotfix; }
+            set
+            {
+                if (value == showPullRequestHotfix) return;
+                showPullRequestHotfix = value;
                 var gf = new GitFlowWrapper(GitFlowPage.ActiveRepoPath);
                 if (gf.IsOnHotfixBranch)
                 {
@@ -1443,6 +1599,22 @@ namespace GitFlowAVH.ViewModels
             }
         }
 
+        public Visibility PullRequestHotfixVisible
+        {
+            get
+            {
+                return FinishHotfixVisible;
+            }
+        }
+
+        public Visibility OtherPullRequestHotfixVisible
+        {
+            get
+            {
+                return OtherFinishHotfixVisible;
+            }
+        }
+
         public Visibility FinishFeatureVisible
         {
             get
@@ -1461,6 +1633,22 @@ namespace GitFlowAVH.ViewModels
             }
         }
 
+        public Visibility PullRequestFeatureVisible
+        {
+            get
+            {
+                return FinishFeatureVisible;
+            }
+        }
+
+        public Visibility OtherPullRequestFeatureVisible
+        {
+            get
+            {
+                return OtherFinishFeatureVisible;
+            }
+        }
+
         public Visibility FinishBugfixVisible
         {
             get
@@ -1476,6 +1664,22 @@ namespace GitFlowAVH.ViewModels
             {
                 var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
                 return gf.IsOnBugfixBranch ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public Visibility PullRequestBugfixVisible
+        {
+            get
+            {
+                return FinishBugfixVisible;
+            }
+        }
+
+        public Visibility OtherPullRequestBugfixVisible
+        {
+            get
+            {
+                return OtherFinishBugfixVisible;
             }
         }
 
