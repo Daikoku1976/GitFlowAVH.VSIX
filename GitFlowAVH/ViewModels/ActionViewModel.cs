@@ -859,7 +859,45 @@ namespace GitFlowAVH.ViewModels
 
         private void PullRequestFeature()
         {
-            ShowInfoMessage("PullRequestFeature... TODO");
+            try
+            {
+                DateTime start = DateTime.Now;
+
+                var properties = new Dictionary<string, string>
+                {
+                    {"DeleteLocalBranch", FeatureDeleteLocalBranch.ToString()}
+                };
+                Logger.Event("PullRequestFeature", properties);
+
+                if (GitFlowPage.ActiveRepo != null)
+                {
+                    GitFlowPage.ActiveOutputWindow();
+
+                    ShowProgressBar();
+
+                    var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
+                    
+                    var result = gf.PullRequestFeature(SelectedFeature.Name, FeatureDeleteLocalBranch);
+                    if (!result.Success)
+                    {
+                        ShowErrorMessage(result);
+                    }
+
+                    HideProgressBar();
+                    ShowPullRequestFeature = Visibility.Collapsed;
+                    UpdateMenus();
+                    HideAll();
+                    OnPropertyChanged("AllFeatures");
+                    Te.Refresh();
+                }
+
+                Logger.Metric("Duration-PullRequestFeature", (DateTime.Now - start).Milliseconds);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.ToString());
+                Logger.Exception(ex);
+            }
         }
 
         private void FinishBugfix()
@@ -910,7 +948,44 @@ namespace GitFlowAVH.ViewModels
 
         private void PullRequestBugfix()
         {
-            ShowInfoMessage("PullRequestBugfix... TODO");
+            try
+            {
+                DateTime start = DateTime.Now;
+
+                var properties = new Dictionary<string, string>
+                {
+                    {"DeleteLocalBranch", BugfixDeleteLocalBranch.ToString()}
+                };
+                Logger.Event("PullRequestBugfix", properties);
+
+                if (GitFlowPage.ActiveRepo != null)
+                {
+                    GitFlowPage.ActiveOutputWindow();
+
+                    ShowProgressBar();
+
+                    var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
+                    var result = gf.PullRequestBugfix(SelectedBugfix.Name, BugfixDeleteLocalBranch);
+                    if (!result.Success)
+                    {
+                        ShowErrorMessage(result);
+                    }
+
+                    HideProgressBar();
+                    ShowFinishBugfix = Visibility.Collapsed;
+                    UpdateMenus();
+                    HideAll();
+                    OnPropertyChanged("AllBugfixes");
+                    Te.Refresh();
+                }
+
+                Logger.Metric("Duration-PullRequestBugfix", (DateTime.Now - start).Milliseconds);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.ToString());
+                Logger.Exception(ex);
+            }
         }
 
         private void FinishRelease()

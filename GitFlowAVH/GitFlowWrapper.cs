@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using LibGit2Sharp;
 
 namespace GitFlowAVH
@@ -613,6 +612,26 @@ namespace GitFlowAVH
             }
         }
 
+        public GitFlowCommandResult PullRequestFeature(string featureName, bool deleteLocalBranch = true)
+        {
+            var publishFeatureResult = PublishFeature(featureName);
+            if (!publishFeatureResult.Success)
+                return publishFeatureResult;
+
+            var azReposResult = RunAzRepos($"pr create --source-branch feature/{featureName} --target-branch develop --title \"Feature {featureName} into develop\" --open");
+            if (!azReposResult.Success)
+                return azReposResult;
+
+            if (!deleteLocalBranch)
+                return azReposResult;
+
+            var gitCheckoutResult = RunGitCheckout($"develop");
+            if (!gitCheckoutResult.Success)
+                return gitCheckoutResult;
+
+            return RunGitBranch($"-d feature/{featureName}");
+        }
+
         public GitFlowCommandResult StartBugfix(string bugfixName)
         {
             ValidateGitFlowActionName(bugfixName);
@@ -702,6 +721,40 @@ namespace GitFlowAVH
             devResult.CommandOutput = resultConfigUnset.CommandOutput + devResult.CommandOutput;
 
             return devResult;
+        }
+
+        public GitFlowCommandResult PullRequestBugfix(string bugfixName, bool deleteLocalBranch = true)
+        {
+            var publishFeatureResult = PublishBugfix(bugfixName);
+            if (!publishFeatureResult.Success)
+                return publishFeatureResult;
+
+            var s = bugfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var isReleaseBased = false;
+            string releaseName = null;
+            if (s.Length > 1)
+            {
+                isReleaseBased = true;
+                releaseName = s[0];
+
+                var azReposReleaseResult = RunAzRepos($"pr create --source-branch bugfix/{bugfixName} --target-branch release/{releaseName} --title \"Bugfix {bugfixName} into release {releaseName}\" --open");
+                if (!azReposReleaseResult.Success)
+                    return azReposReleaseResult;
+            }
+
+            var azReposResult = RunAzRepos($"pr create --source-branch bugfix/{bugfixName} --target-branch develop --title \"Bugfix {bugfixName} into develop\" --open");
+            if (!azReposResult.Success)
+                return azReposResult;
+
+            if (!deleteLocalBranch)
+                return azReposResult;
+
+            var checkoutBranchName = isReleaseBased ? $"release/{releaseName}" : "develop";
+            var gitCheckoutResult = RunGitCheckout(checkoutBranchName);
+            if (!gitCheckoutResult.Success)
+                return gitCheckoutResult;
+
+            return RunGitBranch($"-d bugfix/{bugfixName}");
         }
 
         public GitFlowCommandResult StartRelease(string releaseName)
@@ -951,11 +1004,6 @@ namespace GitFlowAVH
             return result;
         }
 
-        private static Process CreateGitConfigProcess(string arguments, string repoDirectory)
-        {
-            return CreateGitProcess("config " + arguments, repoDirectory);
-        }
-
         private static Process CreateGitFlowProcess(string arguments, string repoDirectory)
         {
             return CreateGitProcess("flow " + arguments, repoDirectory);
@@ -976,6 +1024,28 @@ namespace GitFlowAVH
                     RedirectStandardError = true,
                     FileName = pathToGit,
                     Arguments = arguments,
+                    WorkingDirectory = repoDirectory
+                }
+            };
+        }
+
+        private static Process CreateAzReposProcess(string arguments, string repoDirectory)
+        {
+            var azInstallationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Microsoft SDKs\Azure\CLI2\wbin\az.cmd");
+ 
+            var args = $"repos {arguments}";
+
+            return new Process
+            {
+                StartInfo =
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    FileName = azInstallationPath,
+                    Arguments = args,
                     WorkingDirectory = repoDirectory
                 }
             };
@@ -1083,46 +1153,75 @@ namespace GitFlowAVH
             return true;
         }
 
-        private GitFlowCommandResult RunGitFlow(string gitArguments, int timeout = 15000)
+        private GitFlowCommandResult RunGitProcess(Process p, int timeout = 15000)
         {
             Error = new StringBuilder("");
             Output = new StringBuilder("");
 
-            using (var p = CreateGitFlowProcess(gitArguments, repoDirectory))
+            OnCommandOutputDataReceived(new CommandOutputEventArgs("Running git " + p.StartInfo.Arguments + "\n"));
+            p.Start();
+            p.ErrorDataReceived += OnErrorReceived;
+            p.OutputDataReceived += OnOutputDataReceived;
+            p.BeginErrorReadLine();
+            p.BeginOutputReadLine();
+            p.WaitForExit(timeout);
+            if (!p.HasExited)
             {
-                OnCommandOutputDataReceived(new CommandOutputEventArgs("Running git " + p.StartInfo.Arguments + "\n"));
-                p.Start();
-                p.ErrorDataReceived += OnErrorReceived;
-                p.OutputDataReceived += OnOutputDataReceived;
-                p.BeginErrorReadLine();
-                p.BeginOutputReadLine();
+                OnCommandOutputDataReceived(new CommandOutputEventArgs("The command is taking longer than expected\n"));
+
                 p.WaitForExit(timeout);
                 if (!p.HasExited)
                 {
-                    OnCommandOutputDataReceived(new CommandOutputEventArgs("The command is taking longer than expected\n"));
+                    return new GitFlowTimedOutCommandResult("git " + p.StartInfo.Arguments);
+                }
+            }
+            if (Error != null && Error.Length > 0)
+            {
+                return new GitFlowCommandResult(false, Error.ToString());
+            }
+            return new GitFlowCommandResult(true, Output.ToString());
+        }
 
-                    p.WaitForExit(timeout);
-                    if (!p.HasExited)
-                    {
-                        return new GitFlowTimedOutCommandResult("git " + p.StartInfo.Arguments);
-                    }
-                }
-                if (Error != null && Error.Length > 0)
-                {
-                    return new GitFlowCommandResult(false, Error.ToString());
-                }
-                return new GitFlowCommandResult(true, Output.ToString());
+        private GitFlowCommandResult RunGitFlow(string gitArguments, int timeout = 15000)
+        {
+            using (var p = CreateGitFlowProcess(gitArguments, repoDirectory))
+            {
+                return RunGitProcess(p, timeout);
             }
         }
 
         private GitFlowCommandResult RunGitConfig(string gitArguments, int timeout = 15000)
         {
+            using (var p = CreateGitProcess("config " + gitArguments, repoDirectory))
+            {
+                return RunGitProcess(p, timeout);
+            }
+        }
+
+        private GitFlowCommandResult RunGitBranch(string gitArguments, int timeout = 15000)
+        {
+            using (var p = CreateGitProcess("branch " + gitArguments, repoDirectory))
+            {
+                return RunGitProcess(p, timeout);
+            }
+        }
+
+        private GitFlowCommandResult RunGitCheckout(string gitArguments, int timeout = 15000)
+        {
+            using (var p = CreateGitProcess("checkout " + gitArguments, repoDirectory))
+            {
+                return RunGitProcess(p, timeout);
+            }
+        }
+
+        private GitFlowCommandResult RunAzRepos(string arguments, int timeout = 15000)
+        {
             Error = new StringBuilder("");
             Output = new StringBuilder("");
 
-            using (var p = CreateGitConfigProcess(gitArguments, repoDirectory))
+            using (var p = CreateAzReposProcess(arguments, repoDirectory))
             {
-                OnCommandOutputDataReceived(new CommandOutputEventArgs("Running git " + p.StartInfo.Arguments + "\n"));
+                OnCommandOutputDataReceived(new CommandOutputEventArgs("Running az repos " + p.StartInfo.Arguments + "\n"));
                 p.Start();
                 p.ErrorDataReceived += OnErrorReceived;
                 p.OutputDataReceived += OnOutputDataReceived;
@@ -1136,7 +1235,7 @@ namespace GitFlowAVH
                     p.WaitForExit(timeout);
                     if (!p.HasExited)
                     {
-                        return new GitFlowTimedOutCommandResult("git " + p.StartInfo.Arguments);
+                        return new GitFlowTimedOutCommandResult("az repos " + p.StartInfo.Arguments);
                     }
                 }
                 if (Error != null && Error.Length > 0)
