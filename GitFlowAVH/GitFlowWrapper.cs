@@ -876,6 +876,30 @@ namespace GitFlowAVH
             return result;
         }
 
+        public GitFlowCommandResult PullRequestHotfix(string hotfixName, bool deleteBranch = true)
+        {
+            var publishHotfixResult = PublishHotfix(hotfixName);
+            if (!publishHotfixResult.Success)
+                return publishHotfixResult;
+
+            var azReposMasterResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch master --title \"Hotfix {hotfixName} into master\" --open");
+            if (!azReposMasterResult.Success)
+                return azReposMasterResult;
+
+            var azReposDevelopResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch develop --title \"Hotfix {hotfixName} into develop\" --open");
+            if (!azReposDevelopResult.Success)
+                return azReposDevelopResult;
+
+            if (!deleteBranch)
+                return azReposDevelopResult;
+
+            var gitCheckoutResult = RunGitCheckout($"master");
+            if (!gitCheckoutResult.Success)
+                return gitCheckoutResult;
+
+            return RunGitBranch($"-d hotfix/{hotfixName}");
+        }
+
         public string GetBranchBaseValue(string brancheName)
         {
             if (!IsInitialized)

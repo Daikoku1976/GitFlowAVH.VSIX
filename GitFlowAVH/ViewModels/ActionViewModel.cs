@@ -187,7 +187,7 @@ namespace GitFlowAVH.ViewModels
             CancelFinishHotfixCommand = new RelayCommand(p => CancelFinishHotfix(), p => CanCancelFinishCommand());
 
             PullRequestHotfixDropDownCommand = new DropDownLinkCommand(p => PullRequestHotfixDropDown(), p => CanShowPullRequestHotfixDropDown());
-            PullRequestHotfixCommand = new RelayCommand(p => PullRequesthHotfix(), p => CanFinishHotfix);
+            PullRequestHotfixCommand = new RelayCommand(p => PullRequestHotfix(), p => CanFinishHotfix);
             CancelPullRequestHotfixCommand = new RelayCommand(p => CancelPullRequestHotfix(), p => CanCancelFinishCommand());
         }
 
@@ -1074,9 +1074,43 @@ namespace GitFlowAVH.ViewModels
 
         }
 
-        private void PullRequesthHotfix()
+        private void PullRequestHotfix()
         {
-            ShowInfoMessage("PullRequesthHotfix... TODO");
+            try
+            {
+                DateTime start = DateTime.Now;
+                var properties = new Dictionary<string, string>
+                {
+                    {"DeleteBranch", HotfixDeleteBranch.ToString()}
+                };
+                Logger.Event("PullRequesthHotfix", properties);
+
+                if (GitFlowPage.ActiveRepo != null)
+                {
+                    GitFlowPage.ActiveOutputWindow();
+                    ShowProgressBar();
+
+                    var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
+                    var result = gf.PullRequestHotfix(SelectedHotfix.Name, HotfixDeleteBranch);
+                    if (!result.Success)
+                    {
+                        ShowErrorMessage(result);
+                    }
+
+                    HideAll();
+                    HideProgressBar();
+                    ShowFinishHotfix = Visibility.Collapsed;
+                    OnPropertyChanged("AllHotfixes");
+                    UpdateMenus();
+                    Te.Refresh();
+                }
+                Logger.Metric("Duration-PullRequesthHotfix", (DateTime.Now - start).Milliseconds);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.ToString());
+                Logger.Exception(ex);
+            }
         }
 
         public string ReleaseName
