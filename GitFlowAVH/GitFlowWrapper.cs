@@ -612,13 +612,17 @@ namespace GitFlowAVH
             }
         }
 
-        public GitFlowCommandResult PullRequestFeature(string featureName, bool deleteLocalBranch = true)
+        public GitFlowCommandResult PullRequestFeature(string featureName, string pullRequestWorkItems, bool deleteLocalBranch = true)
         {
             var publishFeatureResult = PublishFeature(featureName);
             if (!publishFeatureResult.Success)
                 return publishFeatureResult;
 
-            var azReposResult = RunAzRepos($"pr create --source-branch feature/{featureName} --target-branch develop --title \"Feature {featureName} into develop\" --open");
+            string additionalArguments = string.Empty;
+            if (!string.IsNullOrWhiteSpace(pullRequestWorkItems))
+                additionalArguments += $" --work-items {pullRequestWorkItems}";
+
+            var azReposResult = RunAzRepos($"pr create --source-branch feature/{featureName} --target-branch develop --title \"Feature {featureName} into develop\" --open {additionalArguments}");
             if (!azReposResult.Success)
                 return azReposResult;
 
@@ -723,11 +727,15 @@ namespace GitFlowAVH
             return devResult;
         }
 
-        public GitFlowCommandResult PullRequestBugfix(string bugfixName, bool deleteLocalBranch = true)
+        public GitFlowCommandResult PullRequestBugfix(string bugfixName, string pullRequestWorkItems, bool deleteLocalBranch = true)
         {
             var publishFeatureResult = PublishBugfix(bugfixName);
             if (!publishFeatureResult.Success)
                 return publishFeatureResult;
+
+            string additionalArguments = string.Empty;
+            if (!string.IsNullOrWhiteSpace(pullRequestWorkItems))
+                additionalArguments += $" --work-items {pullRequestWorkItems}";
 
             var s = bugfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
             var isReleaseBased = false;
@@ -737,12 +745,12 @@ namespace GitFlowAVH
                 isReleaseBased = true;
                 releaseName = s[0];
 
-                var azReposReleaseResult = RunAzRepos($"pr create --source-branch bugfix/{bugfixName} --target-branch release/{releaseName} --title \"Bugfix {bugfixName} into release {releaseName}\" --open");
+                var azReposReleaseResult = RunAzRepos($"pr create --source-branch bugfix/{bugfixName} --target-branch release/{releaseName} --title \"Bugfix {bugfixName} into release {releaseName}\" --open {additionalArguments}");
                 if (!azReposReleaseResult.Success)
                     return azReposReleaseResult;
             }
 
-            var azReposResult = RunAzRepos($"pr create --source-branch bugfix/{bugfixName} --target-branch develop --title \"Bugfix {bugfixName} into develop\" --open");
+            var azReposResult = RunAzRepos($"pr create --source-branch bugfix/{bugfixName} --target-branch develop --title \"Bugfix {bugfixName} into develop\" --open {additionalArguments}");
             if (!azReposResult.Success)
                 return azReposResult;
 
@@ -876,17 +884,21 @@ namespace GitFlowAVH
             return result;
         }
 
-        public GitFlowCommandResult PullRequestHotfix(string hotfixName, bool deleteBranch = true)
+        public GitFlowCommandResult PullRequestHotfix(string hotfixName, string pullRequestWorkItems, bool deleteBranch = true)
         {
             var publishHotfixResult = PublishHotfix(hotfixName);
             if (!publishHotfixResult.Success)
                 return publishHotfixResult;
 
-            var azReposMasterResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch master --title \"Hotfix {hotfixName} into master\" --open");
+            string additionalArguments = string.Empty;
+            if (!string.IsNullOrWhiteSpace(pullRequestWorkItems))
+                additionalArguments += $" --work-items {pullRequestWorkItems}";
+
+            var azReposMasterResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch master --title \"Hotfix {hotfixName} into master\" --open {additionalArguments}");
             if (!azReposMasterResult.Success)
                 return azReposMasterResult;
 
-            var azReposDevelopResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch develop --title \"Hotfix {hotfixName} into develop\" --open");
+            var azReposDevelopResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch develop --title \"Hotfix {hotfixName} into develop\" --open {additionalArguments}");
             if (!azReposDevelopResult.Success)
                 return azReposDevelopResult;
 

@@ -240,16 +240,18 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
                     IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
                     ItemsSource="{Binding Path=AllFeatures, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Path=SelectedFeature, Mode=TwoWay}"/>
-                <CheckBox Grid.Row="1"  IsChecked="{Binding FeatureDeleteLocalBranch}">Delete local branch</CheckBox>
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
+                <wpf:LabeledTextBox Grid.Row="1" Margin="-2,0,0,6"
+                               HintText="IDs of the work items to link. Space separated. &lt;Optional&gt;" NameAndAutomationId="Pull Request Work Items"
+                               Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
+                               IsRequired="true" AcceptsReturn="false" Text="{Binding Path=FeaturePullRequestWorkItems, Mode=TwoWay}"/>
+                <TextBlock Grid.Row="2">After finishing:</TextBlock>
+                <CheckBox Grid.Row="3"  IsChecked="{Binding FeatureDeleteLocalBranch}">Delete local branch</CheckBox>
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
                     <Button Command="{Binding PullRequestFeatureCommand}">OK</Button>
                     <teamExplorer:TextLink x:Uid="cancelPullRequestFeature" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
                           Localization.Attributes="Text (Modifiable Readable Text)"
@@ -294,16 +296,18 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
                     IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
                     ItemsSource="{Binding Path=AllBugfixes, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Path=SelectedBugfix, Mode=TwoWay}"/>
-                <CheckBox Grid.Row="1"  IsChecked="{Binding BugfixDeleteLocalBranch}">Delete local branch</CheckBox>
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
+                <wpf:LabeledTextBox Grid.Row="1" Margin="-2,0,0,6"
+                               HintText="IDs of the work items to link. Space separated. &lt;Optional&gt;" NameAndAutomationId="Pull Request Work Items"
+                               Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
+                               IsRequired="true" AcceptsReturn="false" Text="{Binding Path=BugfixPullRequestWorkItems, Mode=TwoWay}"/>
+                <TextBlock Grid.Row="2">After finishing:</TextBlock>
+                <CheckBox Grid.Row="3"  IsChecked="{Binding BugfixDeleteLocalBranch}">Delete local branch</CheckBox>
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
                     <Button Command="{Binding PullRequestBugfixCommand}">OK</Button>
                     <teamExplorer:TextLink x:Uid="cancelPullRequestBugfix" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
                           Localization.Attributes="Text (Modifiable Readable Text)"
@@ -391,8 +395,13 @@
                     IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
                     ItemsSource="{Binding Path=AllHotfixes, UpdateSourceTrigger=PropertyChanged}"
                     SelectedItem="{Binding Path=SelectedHotfix, Mode=TwoWay}"/>
-                <CheckBox Grid.Row="1"  IsChecked="{Binding HotfixDeleteBranch}">Delete local branch</CheckBox>
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
+                <wpf:LabeledTextBox Grid.Row="1" Margin="-2,0,0,6"
+                               HintText="IDs of the work items to link. Space separated. &lt;Optional&gt;" NameAndAutomationId="Pull Request Work Items"
+                               Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
+                               IsRequired="true" AcceptsReturn="false" Text="{Binding Path=HotfixPullRequestWorkItems, Mode=TwoWay}"/>
+                <TextBlock Grid.Row="2">After finishing:</TextBlock>
+                <CheckBox Grid.Row="3"  IsChecked="{Binding HotfixDeleteBranch}">Delete local branch</CheckBox>
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0" >
                     <Button Command="{Binding PullRequestHotfixCommand}">OK</Button>
                     <teamExplorer:TextLink x:Uid="cancelPullRequestHotfix" VerticalAlignment="Center" Margin="6,0,0,0" Text="Cancel"
                           Localization.Attributes="Text (Modifiable Readable Text)"

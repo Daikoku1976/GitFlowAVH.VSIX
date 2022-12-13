@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -37,11 +38,13 @@ namespace GitFlowAVH.ViewModels
         private bool featureDeleteRemoteBranch;
         private bool featureSquash;
         private bool featureNoFastForward;
+        private string featurePullRequestWorkItems;
         private bool bugfixRebaseOnDevelopmentBranch;
         private bool bugfixDeleteLocalBranch;
         private bool bugfixDeleteRemoteBranch;
         private bool bugfixSquash;
         private bool bugfixNoFastForward;
+        private string bugfixPullRequestWorkItems;
         private bool releaseDeleteBranch;
         private string releaseTagMessage;
         private bool releaseForceDeletion;
@@ -51,6 +54,7 @@ namespace GitFlowAVH.ViewModels
         private bool hotfixPushChanges;
         private bool hotfixForceDeletion;
         private string hotfixTagMessage;
+        private string hotfixPullRequestWorkItems;
         private ListItem selectedFeature;
         private ListItem selectedBugfix;
         private bool hotfixTagMessageSelected;
@@ -121,7 +125,7 @@ namespace GitFlowAVH.ViewModels
             BugfixNoFastForward = false;
             ReleaseDeleteBranch = true;
             ReleaseTagMessageSelected = true;
-			ReleaseNoBackMerge = false;
+            ReleaseNoBackMerge = false;
             HotfixDeleteBranch = true;
             HotfixTagMessageSelected = true;
 
@@ -499,6 +503,10 @@ namespace GitFlowAVH.ViewModels
             {
                 if (Equals(value, selectedFeature)) return;
                 selectedFeature = value;
+
+                if (!string.IsNullOrWhiteSpace(selectedFeature?.Name))
+                    FeaturePullRequestWorkItems = ParseWorkItem(selectedFeature.Name);
+
                 OnPropertyChanged();
             }
         }
@@ -519,7 +527,30 @@ namespace GitFlowAVH.ViewModels
             {
                 if (Equals(value, selectedBugfix)) return;
                 selectedBugfix = value;
+
+                if (!string.IsNullOrWhiteSpace(selectedBugfix?.Name))
+                    BugfixPullRequestWorkItems = ParseWorkItem(selectedBugfix.Name);
+
                 OnPropertyChanged();
+            }
+        }
+
+        private string ParseWorkItem(string branchName)
+        {
+            try
+            {
+                var s0 = branchName.Replace("#", string.Empty);
+                var indexSep = s0.IndexOfAny(new char[] { '-', '_', '.' });
+
+                int indexToEndParse = indexSep > 0 ? indexSep : s0.Length - 1;
+                var sId = s0.Substring(0, indexToEndParse);
+
+                return int.Parse(sId).ToString();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception on parse WorkItem on branch {branchName}: {ex}");
+                return string.Empty;
             }
         }
 
@@ -580,10 +611,13 @@ namespace GitFlowAVH.ViewModels
             {
                 if (Equals(value, selectedHotfix)) return;
                 selectedHotfix = value;
+
+                if (!string.IsNullOrWhiteSpace(selectedHotfix?.Name))
+                    HotfixPullRequestWorkItems = ParseWorkItem(selectedHotfix.Name);
+
                 OnPropertyChanged();
             }
         }
-
 
         private void StartFeature()
         {
@@ -865,6 +899,7 @@ namespace GitFlowAVH.ViewModels
 
                 var properties = new Dictionary<string, string>
                 {
+                    {"PullRequestWorkItems", (!String.IsNullOrEmpty(FeaturePullRequestWorkItems)).ToString()},
                     {"DeleteLocalBranch", FeatureDeleteLocalBranch.ToString()}
                 };
                 Logger.Event("PullRequestFeature", properties);
@@ -877,7 +912,7 @@ namespace GitFlowAVH.ViewModels
 
                     var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
                     
-                    var result = gf.PullRequestFeature(SelectedFeature.Name, FeatureDeleteLocalBranch);
+                    var result = gf.PullRequestFeature(SelectedFeature.Name, FeaturePullRequestWorkItems, FeatureDeleteLocalBranch);
                     if (!result.Success)
                     {
                         ShowErrorMessage(result);
@@ -954,6 +989,7 @@ namespace GitFlowAVH.ViewModels
 
                 var properties = new Dictionary<string, string>
                 {
+                    {"PullRequestWorkItems", (!String.IsNullOrEmpty(BugfixPullRequestWorkItems)).ToString()},
                     {"DeleteLocalBranch", BugfixDeleteLocalBranch.ToString()}
                 };
                 Logger.Event("PullRequestBugfix", properties);
@@ -965,7 +1001,7 @@ namespace GitFlowAVH.ViewModels
                     ShowProgressBar();
 
                     var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
-                    var result = gf.PullRequestBugfix(SelectedBugfix.Name, BugfixDeleteLocalBranch);
+                    var result = gf.PullRequestBugfix(SelectedBugfix.Name, BugfixPullRequestWorkItems, BugfixDeleteLocalBranch);
                     if (!result.Success)
                     {
                         ShowErrorMessage(result);
@@ -1081,6 +1117,7 @@ namespace GitFlowAVH.ViewModels
                 DateTime start = DateTime.Now;
                 var properties = new Dictionary<string, string>
                 {
+                    {"PullRequestWorkItems", (!String.IsNullOrEmpty(HotfixPullRequestWorkItems)).ToString()},
                     {"DeleteBranch", HotfixDeleteBranch.ToString()}
                 };
                 Logger.Event("PullRequesthHotfix", properties);
@@ -1091,7 +1128,7 @@ namespace GitFlowAVH.ViewModels
                     ShowProgressBar();
 
                     var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
-                    var result = gf.PullRequestHotfix(SelectedHotfix.Name, HotfixDeleteBranch);
+                    var result = gf.PullRequestHotfix(SelectedHotfix.Name, HotfixPullRequestWorkItems, HotfixDeleteBranch);
                     if (!result.Success)
                     {
                         ShowErrorMessage(result);
@@ -1303,7 +1340,6 @@ namespace GitFlowAVH.ViewModels
                 {
                     SelectedBugfix = AllBugfixes.First(f => f.Name == gf.CurrentBranchLeafName);
                 }
-
                 OnPropertyChanged();
             }
         }
@@ -1413,6 +1449,17 @@ namespace GitFlowAVH.ViewModels
             }
         }
 
+        public string FeaturePullRequestWorkItems
+        {
+            get { return featurePullRequestWorkItems; }
+            set
+            {
+                if (value == featurePullRequestWorkItems) return;
+                featurePullRequestWorkItems = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Bugfix
@@ -1467,6 +1514,17 @@ namespace GitFlowAVH.ViewModels
             {
                 if (value.Equals(bugfixNoFastForward)) return;
                 bugfixNoFastForward = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string BugfixPullRequestWorkItems
+        {
+            get { return bugfixPullRequestWorkItems; }
+            set
+            {
+                if (value == bugfixPullRequestWorkItems) return;
+                bugfixPullRequestWorkItems = value;
                 OnPropertyChanged();
             }
         }
@@ -1597,6 +1655,17 @@ namespace GitFlowAVH.ViewModels
             {
                 if (value.Equals(hotfixDeleteBranch)) return;
                 hotfixDeleteBranch = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string HotfixPullRequestWorkItems
+        {
+            get { return hotfixPullRequestWorkItems; }
+            set
+            {
+                if (value == hotfixPullRequestWorkItems) return;
+                hotfixPullRequestWorkItems = value;
                 OnPropertyChanged();
             }
         }
