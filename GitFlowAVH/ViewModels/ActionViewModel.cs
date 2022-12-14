@@ -539,13 +539,13 @@ namespace GitFlowAVH.ViewModels
         {
             try
             {
-                var s0 = branchName.Replace("#", string.Empty);
-                var indexSep = s0.IndexOfAny(new char[] { '-', '_', '.' });
+                var workItemId = branchName.Replace("#", string.Empty);
+                var indexSep = workItemId.IndexOfAny(new char[] { '-', '_', '.' });
 
-                int indexToEndParse = indexSep > 0 ? indexSep : s0.Length - 1;
-                var sId = s0.Substring(0, indexToEndParse);
+                if (indexSep > 0)
+                    workItemId = workItemId.Substring(0, indexSep);
 
-                return int.Parse(sId).ToString();
+                return int.Parse(workItemId).ToString();
             }
             catch (Exception ex)
             {
