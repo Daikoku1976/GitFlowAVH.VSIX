@@ -23,6 +23,9 @@
 			<RowDefinition></RowDefinition>
 			<RowDefinition></RowDefinition>
 			<RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0">
@@ -213,13 +216,12 @@
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-                <ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
-                    IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
-                    ItemsSource="{Binding Path=AllFeatures, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Path=SelectedFeature, Mode=TwoWay}"/>
-                <CheckBox Grid.Row="1" IsChecked="{Binding FeatureRebaseOnDevelopmentBranch}">Rebase on development branch</CheckBox>
+            <ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
+                IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
+                ItemsSource="{Binding Path=AllFeatures, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding Path=SelectedFeature, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="1" IsChecked="{Binding FeatureRebaseOnDevelopmentBranch}">Rebase on development branch</CheckBox>
             <CheckBox Grid.Row="2"  IsChecked="{Binding FeatureDeleteLocalBranch}">Delete local branch</CheckBox>
             <CheckBox Grid.Row="3"  IsChecked="{Binding FeatureDeleteRemoteBranch}">Delete remote branch</CheckBox>
             <CheckBox Grid.Row="4"  IsChecked="{Binding FeatureSquash}">Squash feature during merge</CheckBox>
@@ -268,9 +270,8 @@
 					<RowDefinition></RowDefinition>
 					<RowDefinition></RowDefinition>
 					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-				</Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
 				<ComboBox Grid.Row="0" Margin="-2,0,0,6" VerticalAlignment="Center"
                     IsEditable="false" IsReadOnly="true" DisplayMemberPath="Name"
                     ItemsSource="{Binding Path=AllBugfixes, UpdateSourceTrigger=PropertyChanged}"
@@ -379,12 +380,9 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <Border Grid.Row="9" Visibility="{Binding ShowPullRequestHotfix}" Style="{StaticResource EmbeddedDialog}">
+        <Border Grid.Row="12" Visibility="{Binding ShowPullRequestHotfix}" Style="{StaticResource EmbeddedDialog}">
             <Grid >
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -409,6 +407,6 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <ProgressBar Grid.Row="10" Margin="0,10,0,0"  Visibility="{Binding Path=ProgressVisibility}" Height="15" Minimum="0" Maximum="100" IsIndeterminate="True" />
+        <ProgressBar Grid.Row="13" Margin="0,10,0,0"  Visibility="{Binding Path=ProgressVisibility}" Height="15" Minimum="0" Maximum="100" IsIndeterminate="True" />
     </Grid>
 </UserControl>
