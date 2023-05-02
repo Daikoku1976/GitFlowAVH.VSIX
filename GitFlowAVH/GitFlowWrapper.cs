@@ -639,54 +639,20 @@ namespace GitFlowAVH
         public GitFlowCommandResult StartBugfix(string bugfixName)
         {
             ValidateGitFlowActionName(bugfixName);
-            string bugfixBase = string.Empty;
             string bugfixPrefix = string.Empty;
-            if (IsOnReleaseBranch)
-            {
-                var currentBranch = CurrentBranch;
-                bugfixPrefix = $"{currentBranch.Split('/')[1]}/";
-                bugfixBase = currentBranch;
-            }
 
-            string gitArguments = $"bugfix start \"{bugfixPrefix}{TrimBranchName(bugfixName)}\" {bugfixBase}";
+            string gitArguments = $"bugfix start \"{bugfixPrefix}{TrimBranchName(bugfixName)}\"";
             return RunGitFlow(gitArguments);
         }
 
         public GitFlowCommandResult FinishBugfix(string bugfixName, bool rebaseOnDevelopment = false, bool deleteLocalBranch = true, bool deleteRemoteBranch = true, bool squash = false, bool noFastForward = false)
         {
-            var addConfigOut = "";
-            var s = bugfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            var isReleaseBased = false;
-            if (s.Length > 1)
-            {
-                isReleaseBased = true;
-                var baseValue = GetBranchBaseValue($"bugfix/{bugfixName}");
-                if (!baseValue.EndsWith(s[0]))
-                {
-                    var resultConfigAdd = RunGitConfig($"--add gitflow.branch.bugfix/{bugfixName}.base release/{s[0]}");
-                    if (!resultConfigAdd.Success)
-                        return resultConfigAdd;
-
-                    addConfigOut = resultConfigAdd.CommandOutput + Environment.NewLine + Environment.NewLine;
-
-                    var adjustBaseValue = GetBranchBaseValue($"bugfix/{bugfixName}");
-                    if (!adjustBaseValue.EndsWith(s[0]))
-                    {
-                        var errorMessage = $"ERROR: Base value missing or mismatch {adjustBaseValue}";
-                        Debug.WriteLine(errorMessage);
-                        OnCommandErrorDataReceived(new CommandOutputEventArgs(errorMessage + Environment.NewLine));
-
-                        return new GitFlowCommandResult(false, errorMessage);
-                    }
-                }
-            }
-
             string gitArguments = "bugfix finish \"" + TrimBranchName(bugfixName) + "\"";
             if (rebaseOnDevelopment)
                 gitArguments += " -r";
-            if (!deleteLocalBranch || isReleaseBased)
+            if (!deleteLocalBranch)
                 gitArguments += " --keeplocal";
-            if (!deleteRemoteBranch || isReleaseBased)
+            if (!deleteRemoteBranch)
                 gitArguments += " --keepremote";
             if (squash)
                 gitArguments += " --squash";
@@ -695,36 +661,7 @@ namespace GitFlowAVH
 
             var result = RunGitFlow(gitArguments);
 
-            result.CommandOutput = addConfigOut + result.CommandOutput;
-
-            if (!result.Success)
-                return result;
-
-            if (!isReleaseBased)
-                return result;
-
-            var resultConfigUnset = RunGitConfig($"--unset gitflow.branch.bugfix/{bugfixName}.base");
-            resultConfigUnset.CommandOutput = result.CommandOutput + resultConfigUnset.CommandOutput + Environment.NewLine + Environment.NewLine;
-            if (!resultConfigUnset.Success)
-                return resultConfigUnset;
-
-            string gitDevArguments = "bugfix finish \"" + TrimBranchName(bugfixName) + "\"";
-            if (rebaseOnDevelopment)
-                gitDevArguments += " -r";
-            if (!deleteLocalBranch)
-                gitDevArguments += " --keeplocal";
-            if (!deleteRemoteBranch)
-                gitDevArguments += " --keepremote";
-            if (squash)
-                gitDevArguments += " --squash";
-            if (noFastForward)
-                gitDevArguments += " --no-ff";
-
-            var devResult = RunGitFlow(gitDevArguments);
-
-            devResult.CommandOutput = resultConfigUnset.CommandOutput + devResult.CommandOutput;
-
-            return devResult;
+            return result;
         }
 
         public GitFlowCommandResult PullRequestBugfix(string bugfixName, string pullRequestWorkItems, bool deleteLocalBranch = true)

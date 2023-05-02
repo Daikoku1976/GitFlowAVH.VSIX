@@ -1694,7 +1694,7 @@ namespace GitFlowAVH.ViewModels
             get
 			{
                 var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
-                return gf.IsOnDevelopBranch || gf.IsOnMasterBranch || gf.IsOnReleaseBranch ? Visibility.Visible : Visibility.Collapsed;
+                return gf.IsOnDevelopBranch || gf.IsOnMasterBranch ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -1703,7 +1703,7 @@ namespace GitFlowAVH.ViewModels
             get
             {
                 var gf = new VsGitFlowWrapper(GitFlowPage.ActiveRepoPath, GitFlowPage.OutputWindow);
-                return gf.IsOnDevelopBranch || gf.IsOnMasterBranch || gf.IsOnReleaseBranch ? Visibility.Collapsed : Visibility.Visible;
+                return gf.IsOnDevelopBranch || gf.IsOnMasterBranch ? Visibility.Collapsed : Visibility.Visible;
             }
         }
 
