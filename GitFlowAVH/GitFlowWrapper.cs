@@ -831,20 +831,20 @@ namespace GitFlowAVH
         public GitFlowCommandResult FinishHotfix(string hotfixName, string tagMessage = null, bool deleteBranch = true, bool forceDeletion = false, bool pushChanges = false)
         {
             var addConfigOut = "";
-            var s = hotfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            if (s.Length > 1)
+            var hotfixNameSplit = hotfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            if (hotfixNameSplit.Length > 1)
             {
                 var baseValue = GetBranchBaseValue($"hotfix/{hotfixName}");
-                if (!baseValue.EndsWith(s[0]))
+                if (!baseValue.EndsWith(hotfixNameSplit[0]))
                 {
-                    var resultConfig = RunGitConfig($"--add gitflow.branch.hotfix/{hotfixName}.base support/{s[0]}");
+                    var resultConfig = RunGitConfig($"--add gitflow.branch.hotfix/{hotfixName}.base support/{hotfixNameSplit[0]}");
                     if (!resultConfig.Success)
                         return resultConfig;
 
                     addConfigOut = resultConfig.CommandOutput + Environment.NewLine + Environment.NewLine;
 
                     var adjustBaseValue = GetBranchBaseValue($"hotfix/{hotfixName}");
-                    if (!adjustBaseValue.EndsWith(s[0]))
+                    if (!adjustBaseValue.EndsWith(hotfixNameSplit[0]))
                     {
                         var errorMessage = $"ERROR: Base value missing or mismatch {adjustBaseValue}";
                         Debug.WriteLine(errorMessage);
@@ -886,6 +886,9 @@ namespace GitFlowAVH
 
         public GitFlowCommandResult PullRequestHotfix(string hotfixName, string pullRequestWorkItems, bool deleteBranch = true)
         {
+            var hotfixNameSplit = hotfixName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var isSupportBranch = hotfixNameSplit.Length > 1;
+
             var publishHotfixResult = PublishHotfix(hotfixName);
             if (!publishHotfixResult.Success)
                 return publishHotfixResult;
@@ -894,20 +897,40 @@ namespace GitFlowAVH
             if (!string.IsNullOrWhiteSpace(pullRequestWorkItems))
                 additionalArguments += $" --work-items {pullRequestWorkItems}";
 
-            var azReposMasterResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch master --title \"Hotfix {hotfixName} into master\" --open {additionalArguments}");
-            if (!azReposMasterResult.Success)
-                return azReposMasterResult;
+            GitFlowCommandResult azReposCommandResult;
 
-            var azReposDevelopResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch develop --title \"Hotfix {hotfixName} into develop\" --open {additionalArguments}");
-            if (!azReposDevelopResult.Success)
-                return azReposDevelopResult;
+            if (!isSupportBranch)
+            {
+                azReposCommandResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch master --title \"Hotfix {hotfixName} into master\" --open {additionalArguments}");
+                if (!azReposCommandResult.Success)
+                    return azReposCommandResult;
+
+                azReposCommandResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch develop --title \"Hotfix {hotfixName} into develop\" --open {additionalArguments}");
+                if (!azReposCommandResult.Success)
+                    return azReposCommandResult;
+            }
+            else
+            {
+                azReposCommandResult = RunAzRepos($"pr create --source-branch hotfix/{hotfixName} --target-branch support/{hotfixNameSplit[0]} --title \"Hotfix {hotfixName} into support/{hotfixNameSplit[0]}\" --open {additionalArguments}");
+                if (!azReposCommandResult.Success)
+                    return azReposCommandResult;
+            }
 
             if (!deleteBranch)
-                return azReposDevelopResult;
+                return azReposCommandResult;
 
-            var gitCheckoutResult = RunGitCheckout($"master");
-            if (!gitCheckoutResult.Success)
-                return gitCheckoutResult;
+            if (!isSupportBranch)
+            {
+                var gitCheckoutResult = RunGitCheckout($"master");
+                if (!gitCheckoutResult.Success)
+                    return gitCheckoutResult;
+            }
+            else
+            {
+                var gitCheckoutResult = RunGitCheckout($"support/{hotfixNameSplit[0]}");
+                if (!gitCheckoutResult.Success)
+                    return gitCheckoutResult;
+            }
 
             return RunGitBranch($"-d hotfix/{hotfixName}");
         }
