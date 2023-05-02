@@ -1120,14 +1120,23 @@ namespace GitFlowAVH
                 OnCommandOutputDataReceived(new CommandOutputEventArgs(dataReceivedEventArgs.Data + Environment.NewLine));
             }
         }
+
         private void OnErrorReceived(object sender, DataReceivedEventArgs dataReceivedEventArgs)
         {
-            if (dataReceivedEventArgs.Data != null && dataReceivedEventArgs.Data.StartsWith("fatal:", StringComparison.OrdinalIgnoreCase))
+            OnErrorReceived(sender, dataReceivedEventArgs, true);
+        }
+
+        private void OnErrorReceived(object sender, DataReceivedEventArgs dataReceivedEventArgs, bool startsWithFatal)
+        {
+            if (dataReceivedEventArgs.Data != null)
             {
-                Error = new StringBuilder();
-                Error.Append(dataReceivedEventArgs.Data);
-                Debug.WriteLine(dataReceivedEventArgs.Data);
-                OnCommandErrorDataReceived(new CommandOutputEventArgs(dataReceivedEventArgs.Data + Environment.NewLine));
+                if (!startsWithFatal || dataReceivedEventArgs.Data.StartsWith("fatal:", StringComparison.OrdinalIgnoreCase))
+                {
+                    Error = new StringBuilder();
+                    Error.Append(dataReceivedEventArgs.Data);
+                    Debug.WriteLine(dataReceivedEventArgs.Data);
+                    OnCommandErrorDataReceived(new CommandOutputEventArgs(dataReceivedEventArgs.Data + Environment.NewLine));
+                }
             }
         }
 
@@ -1280,9 +1289,9 @@ namespace GitFlowAVH
 
             using (var p = CreateAzReposProcess(arguments, repoDirectory))
             {
-                OnCommandOutputDataReceived(new CommandOutputEventArgs("Running az repos " + p.StartInfo.Arguments + "\n"));
+                OnCommandOutputDataReceived(new CommandOutputEventArgs("Running az " + p.StartInfo.Arguments + "\n"));
                 p.Start();
-                p.ErrorDataReceived += OnErrorReceived;
+                p.ErrorDataReceived += (o, e) => OnErrorReceived(o, e, false);
                 p.OutputDataReceived += OnOutputDataReceived;
                 p.BeginErrorReadLine();
                 p.BeginOutputReadLine();
@@ -1294,7 +1303,7 @@ namespace GitFlowAVH
                     p.WaitForExit(timeout);
                     if (!p.HasExited)
                     {
-                        return new GitFlowTimedOutCommandResult("az repos " + p.StartInfo.Arguments);
+                        return new GitFlowTimedOutCommandResult("az " + p.StartInfo.Arguments);
                     }
                 }
                 if (Error != null && Error.Length > 0)
