@@ -539,6 +539,10 @@ namespace GitFlowAVH.ViewModels
         {
             try
             {
+                var branchNameSplit = branchName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                if (branchNameSplit.Length > 1)
+                    branchName = branchNameSplit[1];
+
                 var workItemId = branchName.Replace("#", string.Empty);
                 var indexSep = workItemId.IndexOfAny(new char[] { '-', '_', '.' });
 
