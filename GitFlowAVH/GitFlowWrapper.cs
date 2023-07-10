@@ -387,7 +387,14 @@ namespace GitFlowAVH
             //{
             //    branchName = branchName.Substring(branchName.LastIndexOf('/')+1);
             //}
-            return branchName.Trim().Replace(" ", "-");
+
+            branchName = branchName.Trim().Replace(" ", "-").Replace("/", "-").Replace("\\", "-");
+
+            //int maxLength = 30;
+            //if (branchName.Length > maxLength)
+            //    branchName = branchName.Remove(maxLength);
+
+            return branchName;
         }
 
         public GitFlowCommandResult TrackFeature(string featureName)

@@ -82,7 +82,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6"
+                <wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6" MaxLength="30"
                                HintText="Enter a feature name &lt;Required&gt;" NameAndAutomationId="Feature name"
                                Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
                                IsRequired="true" AcceptsReturn="false" Text="{Binding Path=FeatureName, Mode=TwoWay}">
@@ -106,7 +106,7 @@
 					<RowDefinition></RowDefinition>
 					<RowDefinition></RowDefinition>
 				</Grid.RowDefinitions>
-				<wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6"
+                <wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6" MaxLength="30"
                                HintText="Enter a bugfix name &lt;Required&gt;" NameAndAutomationId="Bugfix name"
                                Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
                                IsRequired="true" AcceptsReturn="false" Text="{Binding Path=BugfixName, Mode=TwoWay}">
@@ -130,7 +130,7 @@
 					<RowDefinition></RowDefinition>
 					<RowDefinition></RowDefinition>
 				</Grid.RowDefinitions>
-				<wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6"
+                <wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6" MaxLength="30"
                                HintText="Enter a release name &lt;Required&gt;" NameAndAutomationId="Release name"
                                Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
                                IsRequired="true" AcceptsReturn="false" Text="{Binding Path=ReleaseName, Mode=TwoWay}">
@@ -155,7 +155,7 @@
 					<RowDefinition></RowDefinition>
 					<RowDefinition></RowDefinition>
 				</Grid.RowDefinitions>
-				<wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6"
+                <wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6" MaxLength="30"
                                HintText="Enter a support name &lt;Required&gt;" NameAndAutomationId="Support name"
                                Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
                                IsRequired="true" AcceptsReturn="false" Text="{Binding Path=SupportName, Mode=TwoWay}">
@@ -187,7 +187,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6"
+                <wpf:LabeledTextBox Grid.Row="0" Margin="-2,0,0,6" MaxLength="30"
                                HintText="Enter a hotfix name &lt;Required&gt;" NameAndAutomationId="Hotfix name"
                                Localization.Attributes="HintText (Modifiable Readable Text) NameAndAutomationId (Modifiable Readable Text)"
                                IsRequired="true" AcceptsReturn="false" Text="{Binding Path=HotfixName, Mode=TwoWay}">
