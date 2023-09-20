@@ -1034,8 +1034,16 @@ namespace GitFlowAVH
 
         private static Process CreateAzReposProcess(string arguments, string repoDirectory)
         {
-            var azInstallationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Microsoft SDKs\Azure\CLI2\wbin\az.cmd");
- 
+            var azInstallationPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Microsoft SDKs\Azure\CLI2\wbin\az.cmd");
+            if (!File.Exists(azInstallationPath))
+            {
+                var azInstallationPathX86 = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), @"Microsoft SDKs\Azure\CLI2\wbin\az.cmd");
+                if (!File.Exists(azInstallationPathX86))
+                    throw new FileNotFoundException($"Az cli not found in paths:\r\n  {azInstallationPath}\r\n  {azInstallationPathX86}");
+
+                azInstallationPath = azInstallationPathX86;
+            }
+
             var args = $"repos {arguments}";
 
             return new Process
